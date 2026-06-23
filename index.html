@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Performance</title>
+    <link rel="stylesheet" href="css/style.css">
+     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+    <!-- --- BRUTALISM CONSENT OVERLAY --- -->
+    <div id="consentOverlay" class="consent-overlay">
+        <div class="consent-box">
+            <h2 class="consent-title">DATA<br>HARVESTING.</h2>
+            <p class="consent-text">Wir wollen deine Klicks und dein Scrollverhalten analysieren, um unser <a href="html/tracking.html" style="color:var(--main-bg);">User Intel Dashboard</a> zu füttern. Keine Third-Party-Cookies, kein Verkauf an Werbenetzwerke – reines Kunstprojekt. Bist du cool damit?</p>
+            <div class="consent-buttons">
+                <button class="consent-btn accept" onclick="handleConsent(true)">GIB MIR DEINE DATEN</button>
+                <button class="consent-btn decline" onclick="handleConsent(false)">NEIN, ICH BIN EIN GOLDFISCH</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="canvas">
+        <h1 class="bg-text">move<br>the<br>cat</h1>
+
+        <div class="collage-container">
+            <div class="cat-base layer"></div>
+            
+            <div class="patch eye-left" id="eyeBlack"></div>
+            
+            <div class="patch eye-right" id="eyeGrey"></div>
+
+            <div class="patch mouth" id="mouthWhite"></div>
+        </div>
+    </main>
+
+    <section class="wheel-section" id="wheelSection">
+        <div class="wheel-sticky">
+            
+            <div class="wheel-container">
+                <div class="wheel" id="spinWheel">
+                    <div class="wheel-marker m-1">✦</div>
+                    <div class="wheel-marker m-2">✦</div>
+                    <div class="wheel-marker m-3">✦</div>
+                    <div class="wheel-marker m-4">✦</div>
+                    <div class="wheel-marker m-5">✦</div>
+                    <div class="wheel-marker m-6">✦</div>
+                    <div class="wheel-marker m-7">✦</div>
+                    <div class="wheel-marker m-8">✦</div>
+                </div>
+            </div>
+
+            <div class="fact-display" id="factDisplay">
+                <span class="card-number" id="factNumber">01</span>
+                <h2 id="factTitle">8 SEKUNDEN</h2>
+                <p id="factText">Der Goldfisch-Mythos: Angeblich ist unsere Aufmerksamkeitsspanne auf 8 Sekunden gesunken. Kürzer als die eines Goldfisches.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="attention-test" id="attentionTest">
+        <div class="test-wrapper">
+            <h2 class="test-title">FOCUS<br>CHECK.</h2>
+            <p class="test-subtitle">Hast du überhaupt gelesen oder nur gescrollt?</p>
+            
+            <div class="quiz-box" id="quizBox">
+                <p class="question">Wie lang ist unsere Aufmerksamkeitsspanne laut dem ersten Fakt?</p>
+                <div class="answers">
+                    <button class="answer-btn wrong" onclick="checkAnswer(false, this)">3 Sekunden</button>
+                    <button class="answer-btn right" onclick="checkAnswer(true, this)">8 Sekunden</button>
+                    <button class="answer-btn wrong" onclick="checkAnswer(false, this)">Was war die Frage?</button>
+                </div>
+            </div>
+
+            <div class="result-message" id="resultMessage"></div>
+        </div>
+
+        <div class="fake-notification" id="fakeNotif">
+            <span class="notif-icon">💬</span>
+            <div class="notif-text">
+                <strong>Neue Nachricht</strong><br>
+                Hey, hast du schon gesehen...
+            </div>
+        </div>
+    </section>
+
+    <section class="impulse-control">
+        <div class="impulse-wrapper">
+            <h2 class="impulse-title">DO NOT<br>CLICK.</h2>
+            <p class="impulse-text">Tu es nicht. Geh einfach weiter zum Footer. Beweise Charakter.</p>
+            <button class="brutal-panic-btn" id="panicBtn">NICHT KLICKEN</button>
+            <p class="panic-message" id="panicMsg"></p>
+        </div>
+    </section>
+
+
+    <footer class="brutal-footer">
+        <div class="footer-content">
+            <h2 class="footer-huge-text">END OF<br>FEED.</h2>
+            <p class="footer-subtext">Dein Dopamin-Spiegel bedankt sich fürs Aufhören.</p>
+        </div>
+        
+        <div class="footer-bar">
+            <div class="footer-links">
+                <a href="html/impressum.html" class="footer-link">IMPRESSUM</a>
+                <a href="html/datenschutz.html" class="footer-link">DATENSCHUTZ</a>
+                <a href="html/tracking.html" class="footer-link">AUSWERTUNG</a>
+
+            </div>
+            <a href="#" class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">
+                BACK TO TOP ⬆
+            </a>
+        </div>
+
+        
+    </footer>
+
+    <script src="js/script.js"></script>
+   
+</body>
+</html>

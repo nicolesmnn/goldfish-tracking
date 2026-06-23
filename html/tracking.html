@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Intel Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body class="dashboard-body">
+
+    <nav class="main-nav">
+        <a href="../index.html" class="nav-item back-btn">◀ BACK TO FEED</a>
+        <div class="nav-item">LIVE TRACKING</div>
+    </nav>
+
+    <header class="dashboard-header">
+        <h1 class="huge-title">USER<br>INTEL.</h1>
+        <p class="subtitle">Echtzeit-Analyse der zerstörten Aufmerksamkeitsspannen.</p>
+    </header>
+
+    <main class="dashboard-grid">
+        <div class="stat-card">
+            <h3 class="stat-title">DOPAMIN JUNKIES</h3>
+            <div class="stat-value" id="val-users">0</div>
+            <div class="stat-label">Total Visitors</div>
+        </div>
+
+        <div class="stat-card highlight">
+            <h3 class="stat-title">AVG. ATTENTION</h3>
+            <div class="stat-value" id="val-time">0s</div>
+            <div class="stat-label">Time on Site</div>
+        </div>
+
+        <div class="stat-card">
+            <h3 class="stat-title">GOLDFISH AWARDS</h3>
+            <div class="stat-value" id="val-fails">0</div>
+            <div class="stat-label">Failed Focus Checks</div>
+        </div>
+
+        <div class="stat-card alert">
+            <h3 class="stat-title">RAGE CLICKS</h3>
+            <div class="stat-value" id="val-rage">0</div>
+            <div class="stat-label">Frustrierte Klicks</div>
+        </div>
+    </main>
+
+    <section class="table-section">
+        <h2 class="table-heading">LATEST LOGS</h2>
+        <table class="brutal-table" id="trackingTable">
+            <thead>
+                <tr>
+                    <th>TIMESTAMP</th>
+                    <th>USER ID</th>
+                    <th>ACTION</th>
+                    <th>SCROLL DEPTH</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="4" class="loading">Loading API Data...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

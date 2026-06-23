@@ -1,0 +1,684 @@
+/* --- COMPLETED STYLE.CSS --- */
+
+:root {
+    --main-bg: #483d8b;    /* Dein dunkles Slate-Blue */
+    --black: #000000;
+    
+    /* NEUE HARMONISCHE FARBEN (abgeleitet von den Katzen) */
+    --accent-orange: #f39c12; /* Ein satteres Orange (wie die Katze) */
+    --accent-light: #f4f4f4;  /* Ein helles Grau/Off-White */
+}
+
+body {
+    background-color: var(--main-bg);
+    font-family: 'Arial Black', sans-serif;
+    margin: 0;
+    /* Verhindert seitliches Scrollen, erlaubt vertikales Scrollen */
+    overflow-x: hidden; 
+    /* Verhindert, dass aus Versehen Text markiert wird beim Ziehen */
+    user-select: none; 
+}
+
+/* Navigation (Unverändert) */
+.main-nav { display: flex; gap: 10px; padding: 20px; z-index: 10; position: relative; }
+.nav-item {
+    border: 3px solid var(--black);
+    border-radius: 50px;
+    padding: 5px 20px;
+    background: white;
+    font-weight: bold;
+}
+
+/* --- KATZEN COLLAGE BEREICH (Unverändert) --- */
+.collage-container {
+    position: relative;
+    width: 500px;
+    height: 600px;
+    margin: 50px auto;
+    padding-top: 5%;
+    z-index: 2;
+}
+
+.cat-base {
+    width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    background-image: url('../img/zoe-gayah-jonker-G7kUPmzi80E-unsplash.jpg');
+    clip-path: polygon(20% 0%, 80% 5%, 100% 30%, 90% 80%, 60% 100%, 20% 95%, 0% 60%, 5% 20%);
+}
+
+.patch {
+    position: absolute;
+    background-size: cover; background-position: center;
+    filter: drop-shadow(8px 8px 4px rgba(0,0,0,0.4)); 
+    cursor: grab;
+    -webkit-user-drag: none; 
+}
+
+.patch.dragging {
+    cursor: grabbing;
+    z-index: 100; 
+    filter: drop-shadow(15px 15px 8px rgba(0,0,0,0.6));
+}
+
+.eye-left {
+    width: 220px; height: 140px; top: 30%; left: -2%;
+    background-image: url('../img/pacto-visual-cWOzOnSoh6Q-unsplash.jpg');
+    clip-path: polygon(0% 25%, 35% 10%, 100% 20%, 95% 85%, 20% 100%, 5% 70%);
+}
+
+.eye-right {
+    width: 200px; height: 150px; top: 30%; right: 2%;
+    background-image: url('../img/zoe-gayah-jonker-uhnbTZC7N9k-unsplash.jpg');
+    clip-path: polygon(15% 0%, 100% 15%, 85% 100%, 0% 70%);
+}
+
+.mouth {
+    width: 400px; height: 180px; bottom: 15%; left: 8%;
+    background-image: url('../img/jae-park-7GX5aICb5i4-unsplash.jpg');
+    clip-path: polygon(0% 15%, 100% 0%, 95% 70%, 70% 100%, 30% 95%, 5% 80%);
+}
+
+.bg-text {
+    position: absolute; 
+    font-size: 15vw; 
+    line-height: 0.8; 
+    text-transform: uppercase;
+    z-index: -1; 
+    margin: 0; 
+    padding: 20px; color: rgba(255,255,255,0.05); /* Sehr subtiler Text */
+}
+
+/* --- SCROLL RAD SEKTION --- */
+
+.wheel-section {
+    height: 1000vh;
+    padding-top: 20%;
+    position: relative;
+    background-color: var(--main-bg);
+}
+
+.wheel-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; 
+    padding-right: 10%; 
+    overflow: hidden;
+}
+
+/* Das Rad-Design: Jetzt extrem weit links */
+.wheel-container {
+    position: absolute;
+    /* Wir schieben den Mittelpunkt auf -110% der Bildschirmhöhe */
+    left: -110vh; 
+    width: 140vh; 
+    height: 140vh;
+    z-index: 1; 
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 12px solid var(--black);
+    background: transparent;
+    box-shadow: inset 0 0 0 15px var(--accent-orange), inset 0 0 0 25px var(--black);
+    position: relative;
+    transform: rotate(0deg); 
+}
+
+/* Die Sterne/Marker auf dem Rad */
+.wheel-marker {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: var(--accent-light);
+    border: 5px solid var(--black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--black);
+    top: 50%;
+    left: 50%;
+    margin-top: -30px;
+    margin-left: -30px;
+}
+
+/* Die Marker bleiben auf dem Radius von 70vh */
+.m-1 { transform: rotate(0deg) translate(70vh); }
+.m-2 { transform: rotate(45deg) translate(70vh); }
+.m-3 { transform: rotate(90deg) translate(70vh); }
+.m-4 { transform: rotate(135deg) translate(70vh); }
+.m-5 { transform: rotate(180deg) translate(70vh); }
+.m-6 { transform: rotate(225deg) translate(70vh); }
+.m-7 { transform: rotate(270deg) translate(70vh); }
+.m-8 { transform: rotate(315deg) translate(70vh); }
+
+/* --- DIE FAKTEN-BOX --- */
+.fact-display {
+    width: 55%; /* Etwas breiter, da links mehr Platz ist */
+    max-width: 700px;
+    background: var(--accent-light);
+    border: 8px solid var(--black);
+    box-shadow: 20px 20px 0px var(--accent-orange);
+    padding: 60px;
+    z-index: 10; 
+    transform: rotate(1.5deg);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fact-display.fade-out {
+    opacity: 0;
+    transform: translateY(30px) rotate(1.5deg);
+}
+
+.fact-display h2 {
+    font-size: 4rem;
+    color: var(--black);
+    margin: 0 0 20px 0;
+    line-height: 0.9;
+    text-transform: uppercase;
+}
+
+.fact-display p {
+    font-size: 1.6rem;
+    color: var(--black);
+    font-family: monospace;
+    font-weight: bold;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.fact-display .card-number {
+    display: inline-block;
+    background: var(--main-bg);
+    color: white;
+    padding: 5px 25px;
+    font-size: 1.8rem;
+    border: 4px solid var(--black);
+    margin-bottom: 25px;
+    transform: rotate(-2deg);
+}
+
+/* Mobile Optimierung */
+@media (max-width: 900px) {
+    .wheel-container {
+        left: -80vw; /* Auf Mobile auch aggressiver nach links */
+        top: 0;
+        width: 160vw;
+        height: 160vw;
+    }
+    
+    .m-1 { transform: rotate(0deg) translate(80vw); }
+    /* ... (andere Marker analog auf 80vw schieben) */
+
+    .fact-display {
+        width: 90%;
+        padding: 30px;
+    }
+}
+
+/* --- FOCUS CHECK SEKTION --- */
+.attention-test {
+    padding: 60px 20px 120px 20px;
+    border-top: 10px solid var(--black);
+    position: relative;
+    display: flex;
+    justify-content: center; /* Zentriert horizontal */
+    align-items: center;     /* Zentriert vertikal */
+    overflow: hidden;
+    width: 100%;             /* Erzwingt die volle Breite */
+}
+
+.test-wrapper {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;          /* Drückt das Quiz von beiden Seiten exakt in die Mitte */
+    text-align: center;
+    position: relative;      /* Verhindert Layout-Verschiebungen */
+    z-index: 1;              /* Hält das Quiz sauber über dem Hintergrund */
+}
+
+.test-title {
+    /* Flexible Schriftgröße: Skaliert auf kleineren Bildschirmen automatisch herunter */
+    font-size: clamp(3.5rem, 8vw, 8rem);
+    line-height: 0.85;
+    margin: 0;
+    color: var(--black);
+    text-transform: uppercase;
+    letter-spacing: -3px;
+}
+
+.test-subtitle {
+    font-size: 1.3rem;
+    font-family: monospace;
+    font-weight: bold;
+    color: var(--black);
+    margin: 20px 0 40px 0; /* Weniger Abstand nach unten */
+    background: var(--accent-orange);
+    display: inline-block;
+    padding: 10px 20px;
+    transform: rotate(-2deg);
+    border: 3px solid var(--black);
+}
+
+/* --- DER QUIZ-BEREICH --- */
+.quiz-box {
+    background-color: var(--accent-light);
+    border: 8px solid var(--black);
+    padding: 40px; /* Leicht verringert für mehr Platz */
+    box-shadow: 15px 15px 0px var(--black);
+    transition: all 0.3s ease;
+}
+
+.question {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--black);
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.answers {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.answer-btn {
+    background: transparent;
+    border: 4px solid var(--black);
+    padding: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    font-family: 'Arial Black', sans-serif;
+}
+
+.answer-btn:hover {
+    background: var(--black);
+    color: white;
+    transform: translate(5px, -5px);
+    box-shadow: -5px 5px 0px var(--accent-orange);
+}
+
+.result-message {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-top: 40px;
+    text-transform: uppercase;
+    display: none; /* Wird rein per JS gesteuert */
+}
+
+/* --- DIE FAKE ABLENKUNG (BENACHRICHTIGUNG) --- */
+.fake-notification {
+    /* Fixiert am Viewport, damit sie beim Scrollen im Blickfeld bleibt */
+    position: fixed;
+    top: 120px; /* Abstand zur Browserleiste */
+    right: -400px; /* Startposition außerhalb des Sichtfelds (wird von GSAP animiert) */
+    background: white;
+    border: 4px solid var(--black);
+    box-shadow: 8px 8px 0px var(--accent-orange);
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 50px;
+    z-index: 9999; /* Brutal über alle anderen Layer legen */
+    opacity: 0; /* GSAP blendet sie ein, sobald der Trigger auslöst */
+}
+
+.notif-icon {
+    font-size: 2rem;
+}
+
+.notif-text {
+    font-family: monospace;
+    color: var(--black);
+    font-size: 1rem;
+    text-align: left;
+}
+
+/*mobil*/
+
+@media (max-width: 600px) {
+    .attention-test {
+        padding: 40px 15px 80px 15px;
+    }
+
+    .test-title {
+        font-size: 3.2rem;
+    }
+
+    .test-subtitle {
+        font-size: 1.1rem;
+        margin: 15px 0 30px 0;
+    }
+
+    .quiz-box {
+        padding: 25px 15px;
+        border: 6px solid var(--black);
+    }
+
+    .question {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+    }
+
+    .answer-btn {
+        padding: 15px;
+        font-size: 1.1rem;
+        border: 3px solid var(--black);
+    }
+
+    .fake-notification {
+        top: 20px; /* Auf Smartphones weiter oben platzieren */
+    }
+}
+
+/* --- DER NEUE MASSIVE FOOTER --- */
+.brutal-footer {
+    /* Ein satter orangener Block als visueller Stopp! */
+    background-color: var(--accent-orange);
+    border-top: 10px solid var(--black);
+    display: flex;
+    flex-direction: column;
+    margin-top: 100px; /* Abstand zur Scroll-Sektion */
+}
+
+/* Der obere Bereich mit dem großen Text */
+.footer-content {
+    padding: 8vw 20px;
+    text-align: center;
+}
+
+/* Massive, gefüllte Schrift (wirkt edler als Outline) */
+.footer-huge-text {
+    font-size: 15vw;
+    line-height: 0.85;
+    margin: 0;
+    font-family: 'Arial Black', sans-serif;
+    color: var(--black);
+    text-transform: uppercase;
+    letter-spacing: -3px; /* Zieht die Buchstaben eng zusammen */
+}
+
+/* Kleiner humorvoller Untertitel */
+.footer-subtext {
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--black);
+    margin-top: 30px;
+}
+
+/* --- DIE UNTERE LEISTE --- */
+.footer-bar {
+    display: flex;
+    justify-content: space-between;
+    background: var(--accent-light);
+    border-top: 6px solid var(--black);
+    /* Keine Lücken, eine durchgehende Kante */
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1; /* Nimmt den restlichen Platz ein */
+}
+
+/* Die Links sehen jetzt wie technische Tabs aus */
+.footer-link {
+    color: var(--black);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 900;
+    padding: 20px 40px;
+    border-right: 6px solid var(--black);
+    text-transform: uppercase;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.footer-link:hover {
+    background-color: var(--black);
+    color: var(--accent-light);
+}
+
+/* Der "Back to Top" Button ist jetzt fest integriert */
+.back-to-top {
+    background-color: var(--black);
+    color: var(--accent-orange);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 900;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.back-to-top:hover {
+    background-color: var(--accent-light);
+    color: var(--black);
+}
+
+/* --- RESPONSIVE FOOTER (Mobile) --- */
+@media (max-width: 800px) {
+    .footer-bar {
+        flex-direction: column; /* Stapelt die Leiste auf dem Handy */
+    }
+    
+    .footer-link {
+        border-right: none;
+        border-bottom: 4px solid var(--black); /* Rahmen jetzt unten */
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box; /* Verhindert Überlappen */
+    }
+    
+    .back-to-top {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 30px 20px; /* Etwas dicker für leichteres Tippen */
+    }
+    
+    .footer-subtext {
+        font-size: 1.1rem;
+    }
+}
+
+/* --- CONSENT OVERLAY --- */
+.consent-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85); /* Stark abdunkeln */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999; /* Garantiert über allem anderen */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.consent-box {
+    background-color: var(--accent-orange);
+    border: 10px solid var(--black);
+    padding: 60px;
+    max-width: 800px;
+    box-shadow: 25px 25px 0px var(--black);
+    text-align: center;
+    transform: rotate(-1.5deg);
+}
+
+.consent-title {
+    font-size: 6rem;
+    line-height: 0.9;
+    margin: 0 0 20px 0;
+    color: var(--black);
+    text-transform: uppercase;
+    letter-spacing: -2px;
+}
+
+.consent-text {
+    font-size: 1.5rem;
+    font-family: monospace;
+    font-weight: bold;
+    color: var(--black);
+    margin-bottom: 40px;
+    line-height: 1.4;
+}
+
+.consent-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.consent-btn {
+    background: var(--black);
+    color: var(--accent-light);
+    border: 4px solid var(--black);
+    padding: 20px 30px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    font-family: 'Arial Black', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.consent-btn.accept {
+    background: var(--accent-light);
+    color: var(--black);
+}
+
+.consent-btn:hover {
+    transform: translate(5px, -5px);
+    box-shadow: -5px 5px 0px var(--black);
+}
+
+.consent-btn.accept:hover {
+    background: var(--black);
+    color: var(--accent-light);
+    box-shadow: -5px 5px 0px var(--accent-light);
+}
+
+@media (max-width: 600px) {
+    .consent-title { font-size: 3.5rem; }
+    .consent-box { padding: 30px; transform: rotate(0deg); }
+    .consent-buttons { flex-direction: column; }
+    .consent-btn { width: 100%; }
+}
+
+/* --- BRUTAL TOAST NOTIFICATIONS --- */
+.brutal-toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 10000; /* Garantiert über dem Overlay und dem Rest */
+    pointer-events: none; /* Klicks gehen durch den Container durch */
+}
+
+.brutal-toast {
+    background: var(--accent-light);
+    color: var(--black);
+    border: 4px solid var(--black);
+    box-shadow: 8px 8px 0px var(--accent-orange);
+    padding: 20px 25px;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    pointer-events: auto; /* Der Toast selbst ist klickbar/blockiert */
+    
+    /* Coole Wackel-Slide-Animation */
+    animation: slideInToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Wird per JS hinzugefügt, um den Toast verschwinden zu lassen */
+.brutal-toast.fade-out {
+    animation: slideOutToast 0.3s ease forwards;
+}
+
+@keyframes slideInToast {
+    0% { transform: translateX(120%) rotate(5deg); }
+    100% { transform: translateX(0) rotate(0deg); }
+}
+
+@keyframes slideOutToast {
+    0% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(120%); opacity: 0; }
+}
+
+/* Mobile Anpassung: Toast unten in die Mitte */
+@media (max-width: 600px) {
+    .brutal-toast-container {
+        bottom: 20px;
+        right: 5%;
+        left: 5%;
+    }
+    .brutal-toast {
+        text-align: center;
+        font-size: 1rem;
+    }
+}
+
+/* IMPULSKONTROLLE --- */
+.impulse-control {
+    padding: 120px 20px;
+    border-top: 10px solid black;
+    position: relative;
+    min-height: 500px;
+    overflow: hidden;
+}
+.impulse-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+.impulse-title {
+    font-size: clamp(4rem, 8vw, 8rem);
+    line-height: 0.85;
+    margin-bottom: 20px;
+    letter-spacing: -3px;
+}
+.impulse-text {
+    font-family: monospace;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #f4f4f4;
+}
+.brutal-panic-btn {
+    background: red;
+    color: white;
+    border: 5px solid var(--black);
+    padding: 25px 50px;
+    font-size: 2rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 10px 10px 0px var(--black);
+    font-family: 'Arial Black', sans-serif;
+    position: relative; /* Wichtig für die Flucht-Animation */
+}
+.panic-message {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-top: 30px;
+    text-transform: uppercase;
+}

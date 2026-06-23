@@ -1,0 +1,135 @@
+/* --- GEMEINSAMES LEGAL CSS (Brutalism Style) --- */
+
+.legal-body { 
+    background-color: #f4f4f4; /* Helles Grau */
+    color: #000000; 
+    margin: 0;
+    font-family: 'Arial Black', sans-serif;
+}
+
+/* Navigation & Button oben */
+.legal-nav {
+    display: flex; 
+    gap: 10px; 
+    padding: 20px; 
+    position: relative; 
+    z-index: 10;
+}
+
+.legal-nav .back-btn {
+    background: #f39c12; /* Dein Katzen-Orange */
+    color: #000000; 
+    text-decoration: none; 
+    border: 3px solid #000000; 
+    border-radius: 50px; 
+    padding: 5px 20px; 
+    font-weight: bold;
+    transition: background 0.2s, color 0.2s;
+}
+
+.legal-nav .back-btn:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+/* Header Bereich */
+.legal-header { 
+    padding: 100px 20px 50px 20px; 
+    background: #000000; 
+    border-bottom: 10px solid #f39c12; 
+}
+
+.legal-title { 
+    font-size: 10vw; 
+    line-height: 0.8; 
+    margin: 0; 
+    color: #ffffff; 
+    text-transform: uppercase; 
+    letter-spacing: -3px; 
+}
+
+.legal-subtitle { 
+    font-size: 1.5rem; 
+    font-family: monospace; 
+    color: #f39c12; 
+    margin-top: 20px; 
+    font-weight: bold;
+}
+
+/* Inhalts-Container & Boxen */
+.legal-container { 
+    max-width: 900px; 
+    margin: 50px auto; 
+    padding: 0 20px; 
+}
+
+.legal-box { 
+    background: #ffffff; 
+    border: 6px solid #000000; 
+    padding: 40px; 
+    box-shadow: 15px 15px 0px #000000; 
+    margin-bottom: 40px; 
+}
+
+/* Spezieller Orangener Schatten für die Datenschutz-Boxen */
+.shadow-orange {
+    box-shadow: 15px 15px 0px #f39c12;
+}
+
+.legal-box h2 { 
+    font-size: 2.5rem; 
+    color: #000000;
+    text-transform: uppercase; 
+    border-bottom: 4px solid #000000; 
+    padding-bottom: 10px; 
+    margin-top: 0; 
+}
+
+.legal-box h3 { 
+    font-size: 1.5rem; 
+    color: #000000;
+    margin-top: 30px; 
+    text-transform: uppercase; 
+}
+
+.legal-box p, .legal-box ul { 
+    font-size: 1.2rem; 
+    font-family: monospace; 
+    font-weight: bold; 
+    line-height: 1.5; 
+    color: #000000;
+}
+
+.legal-box li { 
+    margin-bottom: 10px; 
+}
+
+.legal-box a { 
+    color: #483d8b; /* Dein Slate-Blue als Link-Farbe */
+    text-decoration: underline; 
+    text-decoration-thickness: 3px; 
+}
+
+/* Grelle Highlight-Box (wird in der Datenschutzerklärung genutzt) */
+.highlight-box { 
+    background: #000000; 
+    color: #ffffff; 
+    border-color: #f39c12; 
+    box-shadow: 15px 15px 0px #000000; 
+}
+
+.highlight-box h2 { 
+    color: #ffffff;
+    border-bottom-color: #f39c12; 
+}
+
+.highlight-box p, .highlight-box ul {
+    color: #ffffff;
+}
+
+/* Mobile Optimierung */
+@media (max-width: 768px) {
+    .legal-title { font-size: 14vw; }
+    .legal-box { padding: 25px; }
+    .legal-box h2 { font-size: 1.8rem; }
+}

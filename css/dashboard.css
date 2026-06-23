@@ -1,0 +1,147 @@
+/* --- DASHBOARD GRUNDLAGEN --- */
+.dashboard-body {
+    background-color: var(--accent-light); /* Heller Hintergrund für den Akten-Look */
+    color: var(--black);
+}
+
+.back-btn {
+    text-decoration: none;
+    color: var(--black);
+    background: var(--accent-orange);
+}
+
+.back-btn:hover {
+    background: var(--black);
+    color: white;
+}
+
+.dashboard-header {
+    padding: 100px 20px 50px 20px;
+    border-bottom: 10px solid var(--black);
+    background: var(--main-bg);
+}
+
+.huge-title {
+    font-size: 12vw;
+    line-height: 0.8;
+    margin: 0;
+    color: var(--accent-light);
+    text-transform: uppercase;
+    letter-spacing: -5px;
+}
+
+.subtitle {
+    font-size: 2rem;
+    font-family: monospace;
+    color: var(--accent-orange);
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* --- DAS STATISTIK-GRID --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 50px 20px;
+}
+
+.stat-card {
+    background: white;
+    border: 6px solid var(--black);
+    padding: 40px;
+    box-shadow: 15px 15px 0px var(--black);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stat-card.highlight {
+    background: var(--accent-orange);
+}
+
+.stat-card.alert {
+    background: var(--black);
+    color: white;
+    box-shadow: 15px 15px 0px var(--accent-orange);
+}
+
+.stat-title {
+    margin: 0;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    border-bottom: 3px solid currentColor;
+    padding-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 5rem;
+    font-weight: 900;
+    margin: 20px 0;
+    font-family: monospace;
+}
+
+.stat-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+/* --- DIE BRUTALIST TABELLE --- */
+.table-section {
+    padding: 0 20px 100px 20px;
+}
+
+.table-heading {
+    font-size: 4rem;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+.brutal-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 6px solid var(--black);
+    background: white;
+    box-shadow: 20px 20px 0px var(--black);
+}
+
+.brutal-table th, 
+.brutal-table td {
+    padding: 20px;
+    border: 3px solid var(--black);
+    text-align: left;
+    font-size: 1.2rem;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.brutal-table th {
+    background: var(--black);
+    color: white;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+}
+
+.brutal-table tr:hover {
+    background: var(--accent-orange);
+}
+
+.loading {
+    text-align: center !important;
+    padding: 50px !important;
+    font-size: 2rem !important;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@media (max-width: 800px) {
+    .huge-title { font-size: 20vw; }
+    .brutal-table th, .brutal-table td { padding: 10px; font-size: 1rem; }
+    .table-section { overflow-x: auto; } /* Erlaubt horizontales Scrollen der Tabelle auf dem Handy */
+}
