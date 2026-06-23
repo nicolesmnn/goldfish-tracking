@@ -4,16 +4,14 @@ const cors = require('cors');
 
 const app = express();
 
-// CORS erlaubt nun deinen lokalen PC UND später deine echte Online-Webseite
-const allowedOrigins = [
-    'http://127.0.0.1:5500', 
-    'http://localhost:5500',
-    /\.onrender\.com$/ // Erlaubt automatisch alle Subdomains von Render (für deine Live-Seite)
-];
-
+// Einfache, absolut stabile CORS-Prüfung
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.some(regex => typeof regex === 'string' ? regex === origin : regex.test(origin))) {
+        // Wenn kein Origin da ist (z.B. Server-zu-Server) oder es von Localhost / Render kommt
+        if (!origin || 
+            origin.includes('localhost') || 
+            origin.includes('127.0.0.1') || 
+            origin.includes('.onrender.com')) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -27,17 +25,22 @@ app.use(express.text({ type: '*/*' }));
 
 const DATA_FILE = './daten.json';
 
+// Hilfsfunktion: Stellt sicher, dass das Verzeichnis beschreibbar ist
 function readData() {
-    if (!fs.existsSync(DATA_FILE)) return [];
     try {
+        if (!fs.existsSync(DATA_FILE)) {
+            fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
+            return [];
+        }
         const content = fs.readFileSync(DATA_FILE, 'utf8');
-        return JSON.parse(content);
+        return JSON.parse(content || '[]');
     } catch (e) {
+        console.error("Fehler beim Lesen der JSON:", e);
         return [];
     }
 }
 
-// A. EMPFÄNGER FÜR DIE BEACON-DATEN
+// A. EMPFÄNGER FÜR DIE BEACON-DATEN (VON SCRIPT.JS)
 app.post('/api/harvest', (req, res) => {
     let logs = readData();
     const now = new Date().toLocaleTimeString('de-DE');
@@ -77,11 +80,17 @@ app.post('/api/harvest', (req, res) => {
         logs.push(incomingLog);
     }
 
-    fs.writeFileSync(DATA_FILE, JSON.stringify(logs, null, 2));
+    try {
+        fs.writeFileSync(DATA_FILE, JSON.stringify(logs, null, 2));
+        console.log(`[SUCCESS] Daten für ${userId} verarbeitet.`);
+    } catch (err) {
+        console.error("Schreibfehler:", err);
+    }
+
     res.sendStatus(204); 
 });
 
-// B. SENDER FÜR DAS DASHBOARD
+// B. SENDER FÜR DAS DASHBOARD (AN DASHBOARD.JS)
 app.get('/api/stats', (req, res) => {
     const logs = readData();
     const totalUsers = logs.length;
@@ -100,10 +109,8 @@ app.get('/api/stats', (req, res) => {
     res.json(dashboardData);
 });
 
-function sendTelemetry() {
-    telemetryData.timeSpentOnPage = Math.floor((Date.now() - pageLoadTime) / 1000);
-    const blob = new Blob([JSON.stringify(telemetryData)], { type: 'application/json' });
-    
-    // HIER DEINE REND-URL EINTRAGEN:
-    navigator.sendBeacon("https://mein-tracking-backend.onrender.com/api/harvest", blob);
-}
+// Server starten (Port-Zuweisung für Render optimiert)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Tracking Backend läuft stabil auf Port ${PORT}`);
+});
