@@ -1,9 +1,11 @@
 // --- DASHBOARD API LOGIK ---
 
-// Diese Funktion lädt die echten Daten vom Node-Server (Port 3000)
+// HIER DEINE REND-URL EINTRAGEN:
+const API_BASE_URL = 'https://mein-tracking-backend.onrender.com';
+
 async function fetchTrackingData() {
     try {
-        const response = await fetch('http://localhost:3000/api/stats');
+        const response = await fetch(`${API_BASE_URL}/api/stats`);
         
         if (!response.ok) {
             throw new Error(`HTTP-Fehler! Status: ${response.status}`);
@@ -18,15 +20,12 @@ async function fetchTrackingData() {
     }
 }
 
-// Füllt die HTML-Elemente des Dashboards mit den geladenen Daten
 function updateDashboard(data) {
-    // 1. Oben die dicken Werte füllen
     document.getElementById('val-users').textContent = data.overview.totalUsers;
     document.getElementById('val-time').textContent = data.overview.avgTimeSeconds + "s";
     document.getElementById('val-fails').textContent = data.overview.failedFocusChecks;
     document.getElementById('val-rage').textContent = data.overview.rageClicks;
 
-    // 2. Die Tabelle mit den neuesten Logs befüllen
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = ''; 
 
@@ -37,17 +36,14 @@ function updateDashboard(data) {
 
     data.recentLogs.forEach(log => {
         const row = document.createElement('tr');
-        
         row.innerHTML = `
             <td>${log.time}</td>
             <td>${log.user}</td>
             <td>${log.action}</td>
             <td>${log.scroll}</td>
         `;
-        
         tbody.appendChild(row);
     });
 }
 
-// Startet den Abruf, sobald das Dashboard lädt
 document.addEventListener('DOMContentLoaded', fetchTrackingData);
