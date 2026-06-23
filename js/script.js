@@ -1,6 +1,9 @@
 // GSAP ScrollTrigger Plugin registrieren
 gsap.registerPlugin(ScrollTrigger);
 
+// ==========================================
+// EINMALIGE USER-ID GENERIERUNG
+// ==========================================
 if (!localStorage.getItem('trackingUserId')) {
     const randomId = 'usr_' + Math.random().toString(36).substring(2, 5).toUpperCase();
     localStorage.setItem('trackingUserId', randomId);
@@ -14,283 +17,183 @@ const facts = [
     { num: "04", title: "PHANTOM VIBRATION", text: "Bis zu 80% der Menschen spüren ihr Handy vibrieren, obwohl gar nichts passiert. Unser Gehirn ist hyper-alarmiert." },
     { num: "05", title: "174 ZEITUNGEN", text: "Wir konsumieren heute täglich so viele Daten, wie in 174 dicke Zeitungen passen würden. Kein Wunder, dass das Gehirn oft streikt." },
     { num: "06", title: "23 MINUTEN", text: "So lange braucht dein Gehirn, um nach einer einzigen Unterbrechung (wie einer Push-Nachricht) wieder volle Konzentration aufzubauen." },
-    { num: "07", title: "TIKTOK BRAIN", text: "Endlose Kurzvideos programmieren das Gehirn auf sofortige Belohnung um. Langsame, tiefe Gedankengänge werden physisch anstrengender." },
-    { num: "08", title: "DIGITAL AMNESIA", text: "Das Gehirn lagert Erinnerungen ans Smartphone aus. Was wir sofort ergoogeln können, speichern wir biologisch nicht mehr ab." },
-    { num: "09", title: "F-PATTERN", text: "Wir lesen Texte am Bildschirm nicht mehr, wir scannen sie nur noch grob in einer F-Form. Tiefes Textverständnis geht massiv verloren." },
-    { num: "10", title: "BLAULICHT KATER", text: "Bildschirme vor dem Schlafen killen die Melatonin-Produktion. Der fehlende Tiefschlaf zerstört die Konzentration für den gesamten nächsten Tag." }
+    { num: "07", title: "TIKTOK BRAIN", text: "Kurze, hyper-stimulierende Videos trainieren das Gehirn auf sofortige Belohnung. Längere Inhalte werden unerträglich." }
 ];
 
-const section = document.getElementById('wheelSection');
-const wheel = document.getElementById('spinWheel');
-const display = document.getElementById('factDisplay');
-const factNum = document.getElementById('factNumber');
-const factTitle = document.getElementById('factTitle');
-const factText = document.getElementById('factText');
+const feed = document.getElementById('feed');
+const pageLoadTime = Date.now();
 
-let currentIndex = 0;
+// TELEMETRIE-OBJEKT
+const telemetryData = {
+    userId: localStorage.getItem('trackingUserId'), 
+    userConsent: localStorage.getItem('userConsent') || 'unknown',
+    timeSpentOnPage: 0,
+    tabSwitches: 0,
+    sectionsDiscovered: [],
+    rageClicks: 0
+};
 
-// 2. INTRO & HERO ANIMATIONEN
-if (!localStorage.getItem('userConsent')) {
-    gsap.from(".consent-box", {
-        duration: 0.6,
-        scale: 0,
-        rotation: -8,
-        ease: "back.out(1.5)",
-        delay: 0.3
+// 2. RENDERING FEED
+if (feed) {
+    facts.forEach(fact => {
+        const post = document.createElement('article');
+        post.className = 'post item';
+        post.id = `section-${fact.num}`;
+        post.innerHTML = `
+            <div class="post-header">
+                <span class="post-avatar">🧠</span>
+                <div>
+                    <strong>Brain Overload Project</strong><br>
+                    <span class="post-time">Gerade eben</span>
+                </div>
+            </div>
+            <h2 class="post-title">${fact.title}</h2>
+            <p class="post-text">${fact.text}</p>
+            <div class="post-actions">
+                <button class="action-btn">⚡ Spannen</button>
+                <button class="action-btn">🔄 Schleife</button>
+            </div>
+        `;
+        feed.appendChild(post);
     });
 }
 
-gsap.to(".bg-text", {
-    scrollTrigger: {
-        trigger: ".canvas",
-        start: "top top",
-        end: "bottom top",
-        scrub: true
-    },
-    xPercent: -15,
-    ease: "none"
+// 3. CONSENT OVERLAY
+function handleConsent(agreed) {
+    localStorage.setItem('userConsent', agreed ? 'granted' : 'denied');
+    telemetryData.userConsent = agreed ? 'granted' : 'denied';
+    const overlay = document.getElementById('consentOverlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+if (localStorage.getItem('userConsent')) {
+    const overlay = document.getElementById('consentOverlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+// 4. ANIMATIONEN (GSAP & SCROLLTRIGGER)
+gsap.from(".hero-title", { opacity: 0, y: 100, duration: 1, ease: "power4.out" });
+gsap.from(".hero-subtitle", { opacity: 0, y: 50, duration: 1, delay: 0.3, ease: "power4.out" });
+
+const items = document.querySelectorAll('.item');
+const observerOptions = { threshold: 0.2 };
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+        }
+    });
+}, observerOptions);
+items.forEach(item => observer.observe(item));
+
+// Scroll Progress Line
+window.addEventListener('scroll', () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    const progressLine = document.querySelector('.progress-line');
+    if (progressLine) progressLine.style.width = scrolled + "%";
 });
 
-// 3. SCROLL-RAD LOGIK
-gsap.to(wheel, {
-    scrollTrigger: {
-        trigger: section,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.5,
-        onUpdate: (self) => {
-            let newIndex = Math.floor(self.progress * facts.length);
-            if (newIndex >= facts.length) newIndex = facts.length - 1;
+// 5. INFECTED BUTTON (FLÜCHTENDER BUTTON)
+const panicBtn = document.getElementById('panicBtn');
+let escapeCount = 0;
+let hasClickedPanic = false;
 
-            if (newIndex !== currentIndex) {
-                currentIndex = newIndex;
+if (panicBtn) {
+    // mouseover für PC, touchstart für Smartphones
+    const fleeLogic = () => {
+        if (escapeCount < 5) {
+            const x = Math.random() * 200 - 100;
+            const y = Math.random() * 140 - 70;
+            gsap.to(panicBtn, { x: x, y: y, duration: 0.2, ease: "power1.out" });
+            escapeCount++;
+        } else if (!hasClickedPanic) {
+            panicBtn.textContent = "OK, KLICK MICH...";
+            panicBtn.style.background = "var(--alert-red)";
+            hasClickedPanic = true;
+        }
+    };
 
-                gsap.to(display, {
-                    opacity: 0, 
-                    duration: 0.15, 
-                    onComplete: () => {
-                        factNum.textContent = facts[currentIndex].num;
-                        factTitle.textContent = facts[currentIndex].title;
-                        factText.textContent = facts[currentIndex].text;
-                        
-                        gsap.to(display, { opacity: 1, duration: 0.15 });
-                    }
-                });
+    panicBtn.addEventListener('mouseover', fleeLogic);
+    panicBtn.addEventListener('touchstart', (e) => {
+        if (escapeCount < 5) e.preventDefault(); // Verhindert ungewolltes Zoomen/Klicken beim Flüchten
+        fleeLogic();
+    });
+
+    panicBtn.addEventListener('click', () => {
+        if (hasClickedPanic) {
+            telemetryData.rageClicks++;
+            const msg = document.getElementById('panicMsg');
+            if (msg) msg.textContent = `Fehler. System überlastet. Klicks registriert: ${telemetryData.rageClicks}`;
+        }
+    });
+}
+
+// 6. INTERSECTION OBSERVER FÜR TELEMETRIE
+const trackingObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const sectionId = entry.target.id || entry.target.className;
+            if (!telemetryData.sectionsDiscovered.includes(sectionId)) {
+                telemetryData.sectionsDiscovered.push(sectionId);
             }
         }
-    },
-    rotation: -360,
-    ease: "none"
-});
+    });
+}, { threshold: 0.3 });
 
-// 4. FOCUS CHECK LOGIK
-const attentionTest = document.getElementById('attentionTest');
-const fakeNotif = document.getElementById('fakeNotif');
+document.querySelectorAll('main, section, footer, article').forEach(sec => trackingObserver.observe(sec));
 
-const notifTimeline = gsap.timeline({
-    scrollTrigger: {
-        trigger: attentionTest,
-        start: "top center", 
-        once: true           
+// Live-Zählung von Tab-Wechseln am PC & Handy
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        telemetryData.tabSwitches++;
     }
 });
 
-notifTimeline.to(fakeNotif, {
-    right: "20px",
-    duration: 0.4,
-    delay: 1.5, 
-    ease: "power4.out",
-    onComplete: () => {
-        gsap.to(fakeNotif, {
-            x: "+=4",
-            y: "+=2",
-            yoyo: true,
-            repeat: -1, 
-            duration: 0.05,
-            ease: "none"
+// ==========================================
+// OPTIMIERTES SENDEN (FÜR SMARTPHONES)
+// ==========================================
+function sendTelemetry() {
+    telemetryData.timeSpentOnPage = Math.floor((Date.now() - pageLoadTime) / 1000);
+    const jsonString = JSON.stringify(telemetryData);
+    
+    // Tausche diese URL mit deiner echten Render-Backend-URL aus!
+    const targetUrl = "https://DEIN-ECHTES-BACKEND.onrender.com/api/harvest";
+
+    // Methode 1: Versuche es mit dem schnellen Beacon
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const success = navigator.sendBeacon(targetUrl, blob);
+    
+    // Methode 2: Wenn der Beacon fehlschlägt oder wir auf einem Smartphone sind, 
+    // nutzen wir fetch mit "keepalive", um den Prozess im Hintergrund zu erzwingen
+    if (!success) {
+        fetch(targetUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: jsonString,
+            keepalive: true // Hält die Verbindung auch nach Tab-Schließen offen!
+        }).catch(() => {});
+    }
+}
+
+// Die sichersten Event-Listener für Smartphones (Senden beim Wechseln/Schließen)
+window.addEventListener("visibilitychange", () => { 
+    if (document.visibilityState === "hidden") {
+        sendTelemetry();
+    }
+});
+window.addEventListener("pagehide", sendTelemetry);
+
+// WICHTIG: Wenn jemand am Handy auf den Link "AUSWERTUNG" klickt, senden wir sofort synchron
+document.addEventListener("DOMContentLoaded", () => {
+    const auswertungBtn = Array.from(document.querySelectorAll('button, a')).find(el => el.textContent.includes('AUSWERTUNG'));
+    if (auswertungBtn) {
+        auswertungBtn.addEventListener('click', (e) => {
+            sendTelemetry();
         });
     }
 });
-
-ScrollTrigger.create({
-    trigger: attentionTest,
-    start: "top bottom", 
-    end: "bottom top",   
-    onLeave: () => gsap.to(fakeNotif, { opacity: 0, scale: 0.8, duration: 0.2 }),
-    onEnterBack: () => gsap.to(fakeNotif, { opacity: 1, scale: 1, duration: 0.2 }),
-    onLeaveBack: () => gsap.to(fakeNotif, { opacity: 0, scale: 0.8, duration: 0.2 }),
-    onEnter: () => gsap.to(fakeNotif, { opacity: 1, scale: 1, duration: 0.1 })
-});
-
-fakeNotif.addEventListener('click', () => {
-    gsap.killTweensOf(fakeNotif);
-    telemetryData.tabSwitches++; // Zählt als Fehler/Ablenkung im System!
-
-    fakeNotif.innerHTML = '<div class="notif-text"><strong>REINGEFALLEN.</strong><br>Aufmerksamkeit = 0.</div>';
-    
-    gsap.to(fakeNotif, {
-        backgroundColor: 'var(--accent-orange)',
-        x: 0,
-        y: 0,
-        duration: 0.2
-    });
-
-    gsap.to(fakeNotif, {
-        right: "-500px",
-        delay: 2,
-        duration: 0.4,
-        ease: "power2.in"
-    });
-});
-
-function checkAnswer(isCorrect, btnElement) {
-    const quizBox = document.getElementById('quizBox');
-    const resultMsg = document.getElementById('resultMessage');
-    const allBtns = document.querySelectorAll('.answer-btn');
-
-    allBtns.forEach(btn => {
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        btn.style.cursor = 'not-allowed';
-    });
-
-    btnElement.style.opacity = '1';
-    btnElement.style.transform = 'none';
-    btnElement.style.boxShadow = 'none';
-
-    quizBox.style.display = 'none'; 
-    resultMsg.style.display = 'block'; 
-
-    if (isCorrect) {
-        resultMsg.style.color = 'lime';
-        resultMsg.innerHTML = "RICHTIG.<br>Dein Gehirn funktioniert (noch).";
-    } else if (btnElement.textContent.includes("Frage")) {
-        resultMsg.style.color = 'orange'; 
-        resultMsg.innerHTML = "EXAKT.<br>Du hast bewiesen: Deine Aufmerksamkeitsspanne existiert nicht.";
-    } else {
-        resultMsg.style.color = 'red';
-        resultMsg.innerHTML = "FALSCH.<br>Du hast das Gedächtnis eines Goldfisches.";
-    }
-}
-
-// 5. KATZEN-DRAG-AND-DROP LOGIK
-const patches = document.querySelectorAll('.patch');
-let activePatch = null;
-let offsetX = 0;
-let offsetY = 0;
-
-patches.forEach(patch => {
-    const dragStart = (e) => {
-        activePatch = patch;
-        patch.classList.add('dragging');
-        
-        const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-        const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-        
-        const rect = patch.getBoundingClientRect();
-        offsetX = clientX - rect.left;
-        offsetY = clientY - rect.top;
-        
-        patch.style.zIndex = 1000;
-    };
-
-    patch.addEventListener('mousedown', dragStart);
-    patch.addEventListener('touchstart', dragStart, { passive: true });
-});
-
-const drag = (e) => {
-    if (!activePatch) return;
-    if (e.cancelable) e.preventDefault(); 
-    
-    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-    const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-    
-    const container = activePatch.parentElement;
-    const containerRect = container.getBoundingClientRect();
-    
-    let newLeft = clientX - containerRect.left - offsetX;
-    let newTop = clientY - containerRect.top - offsetY;
-    
-    activePatch.style.right = 'auto';
-    activePatch.style.bottom = 'auto';
-    activePatch.style.left = `${newLeft}px`;
-    activePatch.style.top = `${newTop}px`;
-};
-
-const dragEnd = () => {
-    if (!activePatch) return;
-    activePatch.classList.remove('dragging');
-    activePatch.style.zIndex = ""; 
-    activePatch = null;
-};
-
-document.addEventListener('mousemove', drag, { passive: false });
-document.addEventListener('mouseup', dragEnd);
-document.addEventListener('touchmove', drag, { passive: false });
-document.addEventListener('touchend', dragEnd);
-
-// 6. CONSENT OVERLAY LOGIK
-document.addEventListener("DOMContentLoaded", () => {
-    const overlay = document.getElementById('consentOverlay');
-    const consentStatus = localStorage.getItem('userConsent');
-
-    if (consentStatus !== null) {
-        if (overlay) overlay.style.display = 'none';
-        if (consentStatus === 'true') {
-            startTracking(); 
-        }
-    }
-});
-
-function showBrutalToast(message) {
-    let container = document.getElementById('toastContainer');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toastContainer';
-        container.className = 'brutal-toast-container';
-        document.body.appendChild(container);
-    }
-
-    const toast = document.createElement('div');
-    toast.className = 'brutal-toast';
-    toast.innerHTML = message;
-    container.appendChild(toast);
-
-    gsap.fromTo(toast, { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" });
-
-    gsap.to(toast, {
-        x: 400,
-        opacity: 0,
-        delay: 4,
-        duration: 0.3,
-        ease: "power2.in",
-        onComplete: () => toast.remove()
-    });
-}
-
-function handleConsent(isAccepted) {
-    const overlay = document.getElementById('consentOverlay');
-    localStorage.setItem('userConsent', isAccepted);
-    
-    gsap.to(overlay, {
-        yPercent: -100,
-        duration: 0.5,
-        ease: "power4.in",
-        onComplete: () => {
-            overlay.style.display = 'none';
-            if (isAccepted) {
-                startTracking();
-                showBrutalToast("Tracking aktiv. <br>Willkommen im System.");
-            } else {
-                showBrutalToast("Okay. Wir tracken dich nicht.<br>(Vielleicht.)");
-            }
-        }
-    });
-}
-
-function startTracking() {
-    console.log("TRACKING AKTIV. Daten werden gesammelt...");
-}
 
 // 7. COUNTER VARIABLEN FÜR TELEMETRIE
 let startTime = Date.now();
