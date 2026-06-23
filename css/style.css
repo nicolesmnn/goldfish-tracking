@@ -36,9 +36,9 @@ body {
 /* --- KATZEN COLLAGE BEREICH --- */
 .collage-container {
     position: relative;
-    width: 90vw;       /* Macht die Collage auf Handys voll flexibel */
-    max-width: 500px;  /* Deckelung für Desktop */
-    height: clamp(400px, 110vw, 600px); /* Skaliert proportional */
+    width: 90vw;       
+    max-width: 500px;  
+    height: clamp(400px, 110vw, 600px); 
     margin: 50px auto;
     padding-top: 5%;
     z-index: 2;
@@ -99,7 +99,7 @@ body {
     padding: 20px; color: rgba(255,255,255,0.05);
 }
 
-/* --- SCROLL RAD SEKTION --- */
+/* --- SCROLL RAD SEKTION (DESKTOP) --- */
 .wheel-section {
     height: 1000vh;
     padding-top: 20%;
@@ -118,7 +118,6 @@ body {
     overflow: hidden;
 }
 
-/* Das Rad-Design: Dynamische Anpassung für PC und Handys */
 .wheel-container {
     position: absolute;
     left: -110vh; 
@@ -165,7 +164,6 @@ body {
 .m-7 { transform: rotate(270deg) translate(70vh); }
 .m-8 { transform: rotate(315deg) translate(70vh); }
 
-/* --- DIE FAKTEN-BOX --- */
 .fact-display {
     width: 55%; 
     max-width: 700px;
@@ -176,11 +174,6 @@ body {
     z-index: 10; 
     transform: rotate(1.5deg);
     transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.fact-display.fade-out {
-    opacity: 0;
-    transform: translateY(30px) rotate(1.5deg);
 }
 
 .fact-display h2 {
@@ -304,7 +297,6 @@ body {
     display: none; 
 }
 
-/* Fake Benachrichtigung */
 .fake-notification {
     position: fixed;
     top: 120px; 
@@ -319,7 +311,7 @@ body {
     border-radius: 50px;
     z-index: 9999; 
     opacity: 0; 
-    max-width: 85vw; /* Verhindert Überlappungen auf Handys */
+    max-width: 85vw;
 }
 
 .notif-icon { font-size: 2rem; }
@@ -492,24 +484,40 @@ body {
 .panic-message { font-size: clamp(1.1rem, 4vw, 1.8rem); font-weight: 900; margin-top: 30px; text-transform: uppercase; }
 
 /* ==========================================
-   BREAKPOINTS FÜR MOBILE GERÄTE
+   BREAKPOINTS & MOBILE OPTIMIERUNG
    ========================================== */
 @media (max-width: 900px) {
+    /* ⚠️ RING UND STICKY-EFFEKT AUF MOBILE KOMPLETT DEAKTIVIEREN */
+    .wheel-section {
+        height: auto;
+        padding: 50px 15px;
+    }
+    
     .wheel-sticky {
-        justify-content: center;
+        position: relative;
+        height: auto;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        gap: 30px; /* Abstand zwischen den einzelnen Fakten */
         padding-right: 0;
+        align-items: center;
     }
+
     .wheel-container {
-        left: -100vh; 
-        top: 10vh;
-        width: 140vh;
-        height: 140vh;
+        display: none; /* Schaltet das Riesen-Rad komplett ab */
     }
+
+    /* Die Fakten-Box wird zur wiederholbaren, responsiven Inhaltskarte */
     .fact-display {
-        width: 85%;
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        box-sizing: border-box;
         padding: 30px 20px;
-        transform: rotate(0deg);
+        transform: rotate(0deg) !important; /* Kein schräges Layout auf Mobilgeräten */
         box-shadow: 12px 12px 0px var(--accent-orange);
+        opacity: 1 !important; /* Ignoriert das GSAP-Ausblenden */
     }
 }
 
