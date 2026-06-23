@@ -4,18 +4,13 @@ const cors = require('cors');
 
 const app = express();
 
-// Einfache, absolut stabile CORS-Prüfung
+// Globaler In-Memory-Speicher, falls das Schreiben in Dateien auf Render blockiert wird
+let globalLogs = [];
+
 app.use(cors({
     origin: function (origin, callback) {
-        // Wenn kein Origin da ist (z.B. Server-zu-Server) oder es von Localhost / Render kommt
-        if (!origin || 
-            origin.includes('localhost') || 
-            origin.includes('127.0.0.1') || 
-            origin.includes('.onrender.com')) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
+        // Erlaubt absolut jede Quelle im Testbetrieb, um CORS-Fehler zu 100% auszuschließen
+        callback(null, true);
     },
     credentials: true 
 }));
@@ -25,25 +20,28 @@ app.use(express.text({ type: '*/*' }));
 
 const DATA_FILE = './daten.json';
 
-// Hilfsfunktion: Stellt sicher, dass das Verzeichnis beschreibbar ist
+// Hilfsfunktion zum sicheren Laden
 function readData() {
+    if (globalLogs.length > 0) return globalLogs;
+
     try {
-        if (!fs.existsSync(DATA_FILE)) {
-            fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-            return [];
+        if (fs.existsSync(DATA_FILE)) {
+            const content = fs.readFileSync(DATA_FILE, 'utf8');
+            globalLogs = JSON.parse(content || '[]');
+            return globalLogs;
         }
-        const content = fs.readFileSync(DATA_FILE, 'utf8');
-        return JSON.parse(content || '[]');
     } catch (e) {
-        console.error("Fehler beim Lesen der JSON:", e);
-        return [];
+        console.error("Fehler beim Lesen:", e);
     }
+    return [];
 }
 
 // A. EMPFÄNGER FÜR DIE BEACON-DATEN (VON SCRIPT.JS)
 app.post('/api/harvest', (req, res) => {
     let logs = readData();
-    const now = new Date().toLocaleTimeString('de-DE');
+    
+    // 👑 NEU: Zwingt den Server, die exakte mitteleuropäische Uhrzeit (Berlin/Wien) zu nutzen
+    const now = new Date().toLocaleTimeString('de-DE', { timeZone: 'Europe/Vienna' });
 
     let data = req.body;
     if (typeof data === 'string') {
@@ -63,7 +61,7 @@ app.post('/api/harvest', (req, res) => {
     if (data.rageClicks > 0) finalAction = `Rage Click Triggered`;
 
     const incomingLog = {
-        time: now,
+        time: now, // Nutzt die korrigierte Uhrzeit
         user: userId,
         action: finalAction, 
         scroll: sections.length > 0 ? (sections.length * 75) + "vh" : "0vh",
@@ -80,13 +78,15 @@ app.post('/api/harvest', (req, res) => {
         logs.push(incomingLog);
     }
 
+    globalLogs = logs;
+
     try {
         fs.writeFileSync(DATA_FILE, JSON.stringify(logs, null, 2));
-        console.log(`[SUCCESS] Daten für ${userId} verarbeitet.`);
     } catch (err) {
-        console.error("Schreibfehler:", err);
+        console.log("Hinweis: Datei-Schreiben blockiert, nutze RAM-Speicher.");
     }
 
+    console.log(`[LIVE-LOG] Daten empfangen für: ${userId} um ${now}`);
     res.sendStatus(204); 
 });
 
@@ -109,8 +109,7 @@ app.get('/api/stats', (req, res) => {
     res.json(dashboardData);
 });
 
-// Server starten (Port-Zuweisung für Render optimiert)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Tracking Backend läuft stabil auf Port ${PORT}`);
+    console.log(`🚀 API läuft auf Port ${PORT}`);
 });
