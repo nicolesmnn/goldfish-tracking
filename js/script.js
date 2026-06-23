@@ -33,7 +33,7 @@ const factText = document.getElementById('factText');
 let currentIndex = 0;
 const pageLoadTime = Date.now();
 
-// TRACKING-DATEN-OBJEKT (Jetzt mit userId!)
+// TRACKING-DATEN-OBJEKT
 const telemetryData = {
     userId: localStorage.getItem('trackingUserId'),
     userConsent: localStorage.getItem('userConsent') || 'unknown',
@@ -42,6 +42,35 @@ const telemetryData = {
     sectionsDiscovered: [],
     rageClicks: 0
 };
+
+// ==========================================
+// MOBILE OPTIMIERUNG: GENERIERE ALLE FAKTEN FÜR SMARTPHONES
+// ==========================================
+function setupMobileFacts() {
+    const isMobile = window.innerWidth <= 900;
+    const stickyWrapper = document.querySelector('.wheel-sticky');
+    
+    if (isMobile && stickyWrapper && facts.length > 0) {
+        // Leere den Wrapper, um die alte, einzelne Desktop-Box zu entfernen
+        stickyWrapper.innerHTML = '';
+        
+        // Erstelle für jeden Fakt eine eigene brutalistische Karte
+        facts.forEach(fact => {
+            const card = document.createElement('div');
+            card.className = 'fact-display mobile-fact-card';
+            card.style.margin = '20px 0';
+            card.innerHTML = `
+                <span class="card-number">${fact.num}</span>
+                <h2>${fact.title}</h2>
+                <p>${fact.text}</p>
+            `;
+            stickyWrapper.appendChild(card);
+        });
+    }
+}
+
+// Führe die Handy-Weiche beim Laden aus
+document.addEventListener("DOMContentLoaded", setupMobileFacts);
 
 // 2. INTRO & HERO ANIMATIONEN
 if (!localStorage.getItem('userConsent')) {
@@ -65,8 +94,8 @@ gsap.to(".bg-text", {
     ease: "none"
 });
 
-// 3. SCROLL-RAD LOGIK
-if (wheel && section) {
+// 3. SCROLL-RAD LOGIK (NUR AUF DESKTOP AKTIVIEREN)
+if (window.innerWidth > 900 && wheel && section) {
     gsap.to(wheel, {
         scrollTrigger: {
             trigger: section,
@@ -84,9 +113,9 @@ if (wheel && section) {
                         opacity: 0, 
                         duration: 0.15, 
                         onComplete: () => {
-                            factNum.textContent = facts[currentIndex].num;
-                            factTitle.textContent = facts[currentIndex].title;
-                            factText.textContent = facts[currentIndex].text;
+                            if (factNum) factNum.textContent = facts[currentIndex].num;
+                            if (factTitle) factTitle.textContent = facts[currentIndex].title;
+                            if (factText) factText.textContent = facts[currentIndex].text;
                             
                             gsap.to(display, { opacity: 1, duration: 0.15 });
                         }
@@ -176,18 +205,20 @@ function checkAnswer(isCorrect, btnElement) {
     btnElement.style.transform = 'none';
     btnElement.style.boxShadow = 'none';
 
-    quizBox.style.display = 'none'; 
-    resultMsg.style.display = 'block'; 
+    if (quizBox) quizBox.style.display = 'none'; 
+    if (resultMsg) {
+        resultMsg.style.display = 'block'; 
 
-    if (isCorrect) {
-        resultMsg.style.color = 'lime';
-        resultMsg.innerHTML = "RICHTIG.<br>Dein Gehirn funktioniert (noch).";
-    } else if (btnElement.textContent.includes("Frage")) {
-        resultMsg.style.color = 'orange'; 
-        resultMsg.innerHTML = "EXAKT.<br>Du hast bewiesen: Deine Aufmerksamkeitsspanne existiert nicht.";
-    } else {
-        resultMsg.style.color = 'red';
-        resultMsg.innerHTML = "FALSCH.<br>Du hast das Gedächtnis eines Goldfisches.";
+        if (isCorrect) {
+            resultMsg.style.color = 'lime';
+            resultMsg.innerHTML = "RICHTIG.<br>Dein Gehirn funktioniert (noch).";
+        } else if (btnElement.textContent.includes("Frage")) {
+            resultMsg.style.color = 'orange'; 
+            resultMsg.innerHTML = "EXAKT.<br>Du hast bewiesen: Deine Aufmerksamkeitsspanne existiert nicht.";
+        } else {
+            resultMsg.style.color = 'red';
+            resultMsg.innerHTML = "FALSCH.<br>Du hast das Gedächtnis eines Goldfisches.";
+        }
     }
 }
 
@@ -319,7 +350,7 @@ document.addEventListener('mousemove', (e) => {
     totalPixelTravelled += Math.abs(e.movementX || 0) + Math.abs(e.movementY || 0);
 });
 
-// 8. DOPAMIN MÜHLE LOGIK (EMOJIS)
+// 8. DOPAMIN MÜHLE LOGIK
 const millBox = document.getElementById('millBox');
 const dopamineFeed = [
     { text: "Ein virales Katzenvideo 🐱", visual: "<span class='mill-emoji'>🐱 SCREENSHOT 🐱</span>" },
@@ -363,7 +394,7 @@ if (millBox) {
     });
 }
 
-// 9. IMPULSKONTROLLE LOGIK (HOVER RUNAWAY)
+// 9. IMPULSKONTROLLE LOGIK
 const panicBtn = document.getElementById('panicBtn');
 const panicMsg = document.getElementById('panicMsg');
 let clickCount = 0;
@@ -415,7 +446,7 @@ function startHoverRunaway() {
     }
 }
 
-// 11. TRACKING ENGINE (Live im Frontend & Mobil-Optimiert)
+// 11. TRACKING ENGINE
 document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
         telemetryData.tabSwitches++;
@@ -436,7 +467,7 @@ const trackingObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('main, section, footer').forEach(sec => trackingObserver.observe(sec));
 
 // ==========================================
-// OPTIMIERTES DATEN-SENDEN (FÜR PC & HANDY)
+// OPTIMIERTES DATEN-SENDEN
 // ==========================================
 function sendTelemetry() {
     telemetryData.timeSpentOnPage = Math.floor((Date.now() - pageLoadTime) / 1000);
@@ -445,11 +476,9 @@ function sendTelemetry() {
     // ⚠️ ERSETZE DIESE URL UNBEDINGT MIT DEINER ECHTEN RENDER-URL!
     const targetUrl = "https://goldfish-tracking.onrender.com";
 
-    // 1. Beacon-Versuch (Schnell & asynchron im Hintergrund)
     const blob = new Blob([jsonString], { type: 'application/json' });
     const success = navigator.sendBeacon(targetUrl, blob);
     
-    // 2. Fallback-Versuch (Für Smartphones via keepalive Fetch)
     if (!success) {
         fetch(targetUrl, {
             method: 'POST',
@@ -460,14 +489,12 @@ function sendTelemetry() {
     }
 }
 
-// Sicherste Event-Trigger für mobile Browser
 window.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") sendTelemetry(); });
 window.addEventListener("pagehide", sendTelemetry);
 
 document.addEventListener("DOMContentLoaded", () => {
     const auswertungBtn = Array.from(document.querySelectorAll('button, a')).find(el => el.textContent.includes('AUSWERTUNG'));
     if (auswertungBtn) {
-        // "click" statt "click" + preventDefault sorgt für sofortiges Absenden vor der Weiterleitung
         auswertungBtn.addEventListener("click", () => { sendTelemetry(); });
     }
 });
