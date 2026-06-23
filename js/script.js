@@ -9,6 +9,7 @@ if (!localStorage.getItem('trackingUserId')) {
     localStorage.setItem('trackingUserId', randomId);
 }
 
+
 // 1. DATEN & ELEMENTE
 const facts = [
     { num: "01", title: "8 SEKUNDEN", text: "Der Goldfisch-Mythos: Angeblich ist unsere Aufmerksamkeitsspanne auf 8 Sekunden gesunken. Kürzer als die eines Goldfisches." },
@@ -467,14 +468,14 @@ const trackingObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('main, section, footer').forEach(sec => trackingObserver.observe(sec));
 
 // ==========================================
-// OPTIMIERTES DATEN-SENDEN
+// OPTIMIERTES DATEN-SENDEN (JETZT MIT KORREKTER ROUTE)
 // ==========================================
 function sendTelemetry() {
     telemetryData.timeSpentOnPage = Math.floor((Date.now() - pageLoadTime) / 1000);
     const jsonString = JSON.stringify(telemetryData);
     
-    // ⚠️ ERSETZE DIESE URL UNBEDINGT MIT DEINER ECHTEN RENDER-URL!
-    const targetUrl = "https://goldfish-tracking.onrender.com";
+    // 👑 HIER IST DIE KORREKTE ROUTE:
+    const targetUrl = "https://goldfish-tracking.onrender.com/api/harvest";
 
     const blob = new Blob([jsonString], { type: 'application/json' });
     const success = navigator.sendBeacon(targetUrl, blob);
