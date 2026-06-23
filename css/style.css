@@ -1,39 +1,44 @@
 /* --- COMPLETED STYLE.CSS --- */
 
 :root {
-    --main-bg: #483d8b;    /* Dein dunkles Slate-Blue */
+    --main-bg: #483d8b;    /* Dunkles Slate-Blue */
     --black: #000000;
-    
-    /* NEUE HARMONISCHE FARBEN (abgeleitet von den Katzen) */
-    --accent-orange: #f39c12; /* Ein satteres Orange (wie die Katze) */
-    --accent-light: #f4f4f4;  /* Ein helles Grau/Off-White */
+    --accent-orange: #f39c12; /* Sattes Orange */
+    --accent-light: #f4f4f4;  /* Helles Grau/Off-White */
 }
 
 body {
     background-color: var(--main-bg);
     font-family: 'Arial Black', sans-serif;
     margin: 0;
-    /* Verhindert seitliches Scrollen, erlaubt vertikales Scrollen */
-    overflow-x: hidden; 
-    /* Verhindert, dass aus Versehen Text markiert wird beim Ziehen */
-    user-select: none; 
+    overflow-x: hidden; /* Absoluter Schutz vor horizontalem Scrollen */
+    user-select: none;  /* Verhindert Textmarkierung beim Draggen */
 }
 
-/* Navigation (Unverändert) */
-.main-nav { display: flex; gap: 10px; padding: 20px; z-index: 10; position: relative; }
+/* Navigation */
+.main-nav { 
+    display: flex; 
+    gap: 10px; 
+    padding: 20px; 
+    z-index: 10; 
+    position: relative;
+    flex-wrap: wrap; /* Bricht auf schmalen Handys sauber um */
+}
 .nav-item {
     border: 3px solid var(--black);
     border-radius: 50px;
     padding: 5px 20px;
     background: white;
     font-weight: bold;
+    font-size: clamp(0.8rem, 3vw, 1rem);
 }
 
-/* --- KATZEN COLLAGE BEREICH (Unverändert) --- */
+/* --- KATZEN COLLAGE BEREICH --- */
 .collage-container {
     position: relative;
-    width: 500px;
-    height: 600px;
+    width: 90vw;       /* Macht die Collage auf Handys voll flexibel */
+    max-width: 500px;  /* Deckelung für Desktop */
+    height: clamp(400px, 110vw, 600px); /* Skaliert proportional */
     margin: 50px auto;
     padding-top: 5%;
     z-index: 2;
@@ -61,19 +66,25 @@ body {
 }
 
 .eye-left {
-    width: 220px; height: 140px; top: 30%; left: -2%;
+    width: clamp(140px, 40vw, 220px); 
+    height: clamp(90px, 25vw, 140px); 
+    top: 30%; left: -2%;
     background-image: url('../img/pacto-visual-cWOzOnSoh6Q-unsplash.jpg');
     clip-path: polygon(0% 25%, 35% 10%, 100% 20%, 95% 85%, 20% 100%, 5% 70%);
 }
 
 .eye-right {
-    width: 200px; height: 150px; top: 30%; right: 2%;
+    width: clamp(130px, 38vw, 200px); 
+    height: clamp(95px, 26vw, 150px); 
+    top: 30%; right: 2%;
     background-image: url('../img/zoe-gayah-jonker-uhnbTZC7N9k-unsplash.jpg');
     clip-path: polygon(15% 0%, 100% 15%, 85% 100%, 0% 70%);
 }
 
 .mouth {
-    width: 400px; height: 180px; bottom: 15%; left: 8%;
+    width: clamp(260px, 75vw, 400px); 
+    height: clamp(110px, 30vw, 180px); 
+    bottom: 15%; left: 8%;
     background-image: url('../img/jae-park-7GX5aICb5i4-unsplash.jpg');
     clip-path: polygon(0% 15%, 100% 0%, 95% 70%, 70% 100%, 30% 95%, 5% 80%);
 }
@@ -85,11 +96,10 @@ body {
     text-transform: uppercase;
     z-index: -1; 
     margin: 0; 
-    padding: 20px; color: rgba(255,255,255,0.05); /* Sehr subtiler Text */
+    padding: 20px; color: rgba(255,255,255,0.05);
 }
 
 /* --- SCROLL RAD SEKTION --- */
-
 .wheel-section {
     height: 1000vh;
     padding-top: 20%;
@@ -104,14 +114,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-end; 
-    padding-right: 10%; 
+    padding-right: 5%; 
     overflow: hidden;
 }
 
-/* Das Rad-Design: Jetzt extrem weit links */
+/* Das Rad-Design: Dynamische Anpassung für PC und Handys */
 .wheel-container {
     position: absolute;
-    /* Wir schieben den Mittelpunkt auf -110% der Bildschirmhöhe */
     left: -110vh; 
     width: 140vh; 
     height: 140vh;
@@ -129,7 +138,6 @@ body {
     transform: rotate(0deg); 
 }
 
-/* Die Sterne/Marker auf dem Rad */
 .wheel-marker {
     position: absolute;
     width: 60px;
@@ -148,7 +156,6 @@ body {
     margin-left: -30px;
 }
 
-/* Die Marker bleiben auf dem Radius von 70vh */
 .m-1 { transform: rotate(0deg) translate(70vh); }
 .m-2 { transform: rotate(45deg) translate(70vh); }
 .m-3 { transform: rotate(90deg) translate(70vh); }
@@ -160,7 +167,7 @@ body {
 
 /* --- DIE FAKTEN-BOX --- */
 .fact-display {
-    width: 55%; /* Etwas breiter, da links mehr Platz ist */
+    width: 55%; 
     max-width: 700px;
     background: var(--accent-light);
     border: 8px solid var(--black);
@@ -177,7 +184,7 @@ body {
 }
 
 .fact-display h2 {
-    font-size: 4rem;
+    font-size: clamp(2rem, 6vw, 4rem);
     color: var(--black);
     margin: 0 0 20px 0;
     line-height: 0.9;
@@ -185,7 +192,7 @@ body {
 }
 
 .fact-display p {
-    font-size: 1.6rem;
+    font-size: clamp(1rem, 3.5vw, 1.6rem);
     color: var(--black);
     font-family: monospace;
     font-weight: bold;
@@ -204,48 +211,30 @@ body {
     transform: rotate(-2deg);
 }
 
-/* Mobile Optimierung */
-@media (max-width: 900px) {
-    .wheel-container {
-        left: -80vw; /* Auf Mobile auch aggressiver nach links */
-        top: 0;
-        width: 160vw;
-        height: 160vw;
-    }
-    
-    .m-1 { transform: rotate(0deg) translate(80vw); }
-    /* ... (andere Marker analog auf 80vw schieben) */
-
-    .fact-display {
-        width: 90%;
-        padding: 30px;
-    }
-}
-
 /* --- FOCUS CHECK SEKTION --- */
 .attention-test {
     padding: 60px 20px 120px 20px;
     border-top: 10px solid var(--black);
     position: relative;
     display: flex;
-    justify-content: center; /* Zentriert horizontal */
-    align-items: center;     /* Zentriert vertikal */
+    justify-content: center; 
+    align-items: center;     
     overflow: hidden;
-    width: 100%;             /* Erzwingt die volle Breite */
+    width: 100%;             
+    box-sizing: border-box;
 }
 
 .test-wrapper {
     max-width: 800px;
     width: 100%;
-    margin: 0 auto;          /* Drückt das Quiz von beiden Seiten exakt in die Mitte */
+    margin: 0 auto;          
     text-align: center;
-    position: relative;      /* Verhindert Layout-Verschiebungen */
-    z-index: 1;              /* Hält das Quiz sauber über dem Hintergrund */
+    position: relative;      
+    z-index: 1;              
 }
 
 .test-title {
-    /* Flexible Schriftgröße: Skaliert auf kleineren Bildschirmen automatisch herunter */
-    font-size: clamp(3.5rem, 8vw, 8rem);
+    font-size: clamp(3rem, 9vw, 8rem);
     line-height: 0.85;
     margin: 0;
     color: var(--black);
@@ -254,11 +243,11 @@ body {
 }
 
 .test-subtitle {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 3vw, 1.3rem);
     font-family: monospace;
     font-weight: bold;
     color: var(--black);
-    margin: 20px 0 40px 0; /* Weniger Abstand nach unten */
+    margin: 20px 0 40px 0; 
     background: var(--accent-orange);
     display: inline-block;
     padding: 10px 20px;
@@ -266,17 +255,16 @@ body {
     border: 3px solid var(--black);
 }
 
-/* --- DER QUIZ-BEREICH --- */
 .quiz-box {
     background-color: var(--accent-light);
     border: 8px solid var(--black);
-    padding: 40px; /* Leicht verringert für mehr Platz */
+    padding: 40px; 
     box-shadow: 15px 15px 0px var(--black);
-    transition: all 0.3s ease;
+    box-sizing: border-box;
 }
 
 .question {
-    font-size: 1.8rem;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
     font-weight: 900;
     color: var(--black);
     margin-top: 0;
@@ -293,7 +281,7 @@ body {
     background: transparent;
     border: 4px solid var(--black);
     padding: 20px;
-    font-size: 1.5rem;
+    font-size: clamp(1.1rem, 3.5vw, 1.5rem);
     font-weight: bold;
     cursor: pointer;
     text-transform: uppercase;
@@ -309,19 +297,18 @@ body {
 }
 
 .result-message {
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
     font-weight: 900;
     margin-top: 40px;
     text-transform: uppercase;
-    display: none; /* Wird rein per JS gesteuert */
+    display: none; 
 }
 
-/* --- DIE FAKE ABLENKUNG (BENACHRICHTIGUNG) --- */
+/* Fake Benachrichtigung */
 .fake-notification {
-    /* Fixiert am Viewport, damit sie beim Scrollen im Blickfeld bleibt */
     position: fixed;
-    top: 120px; /* Abstand zur Browserleiste */
-    right: -400px; /* Startposition außerhalb des Sichtfelds (wird von GSAP animiert) */
+    top: 120px; 
+    right: -400px; 
     background: white;
     border: 4px solid var(--black);
     box-shadow: 8px 8px 0px var(--accent-orange);
@@ -330,110 +317,48 @@ body {
     align-items: center;
     gap: 15px;
     border-radius: 50px;
-    z-index: 9999; /* Brutal über alle anderen Layer legen */
-    opacity: 0; /* GSAP blendet sie ein, sobald der Trigger auslöst */
+    z-index: 9999; 
+    opacity: 0; 
+    max-width: 85vw; /* Verhindert Überlappungen auf Handys */
 }
 
-.notif-icon {
-    font-size: 2rem;
-}
+.notif-icon { font-size: 2rem; }
+.notif-text { font-family: monospace; color: var(--black); font-size: 1rem; text-align: left; }
 
-.notif-text {
-    font-family: monospace;
-    color: var(--black);
-    font-size: 1rem;
-    text-align: left;
-}
-
-/*mobil*/
-
-@media (max-width: 600px) {
-    .attention-test {
-        padding: 40px 15px 80px 15px;
-    }
-
-    .test-title {
-        font-size: 3.2rem;
-    }
-
-    .test-subtitle {
-        font-size: 1.1rem;
-        margin: 15px 0 30px 0;
-    }
-
-    .quiz-box {
-        padding: 25px 15px;
-        border: 6px solid var(--black);
-    }
-
-    .question {
-        font-size: 1.4rem;
-        margin-bottom: 20px;
-    }
-
-    .answer-btn {
-        padding: 15px;
-        font-size: 1.1rem;
-        border: 3px solid var(--black);
-    }
-
-    .fake-notification {
-        top: 20px; /* Auf Smartphones weiter oben platzieren */
-    }
-}
-
-/* --- DER NEUE MASSIVE FOOTER --- */
+/* --- MASSIVE FOOTER --- */
 .brutal-footer {
-    /* Ein satter orangener Block als visueller Stopp! */
     background-color: var(--accent-orange);
     border-top: 10px solid var(--black);
     display: flex;
     flex-direction: column;
-    margin-top: 100px; /* Abstand zur Scroll-Sektion */
+    margin-top: 100px; 
 }
 
-/* Der obere Bereich mit dem großen Text */
-.footer-content {
-    padding: 8vw 20px;
-    text-align: center;
-}
-
-/* Massive, gefüllte Schrift (wirkt edler als Outline) */
+.footer-content { padding: 8vw 20px; text-align: center; }
 .footer-huge-text {
-    font-size: 15vw;
+    font-size: clamp(4rem, 14vw, 15vw);
     line-height: 0.85;
     margin: 0;
-    font-family: 'Arial Black', sans-serif;
     color: var(--black);
     text-transform: uppercase;
-    letter-spacing: -3px; /* Zieht die Buchstaben eng zusammen */
+    letter-spacing: -3px; 
 }
-
-/* Kleiner humorvoller Untertitel */
 .footer-subtext {
     font-family: monospace;
-    font-size: 1.5rem;
+    font-size: clamp(1.1rem, 3.5vw, 1.5rem);
     font-weight: bold;
     color: var(--black);
     margin-top: 30px;
 }
 
-/* --- DIE UNTERE LEISTE --- */
 .footer-bar {
     display: flex;
     justify-content: space-between;
     background: var(--accent-light);
     border-top: 6px solid var(--black);
-    /* Keine Lücken, eine durchgehende Kante */
 }
 
-.footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    flex-grow: 1; /* Nimmt den restlichen Platz ein */
-}
-
-/* Die Links sehen jetzt wie technische Tabs aus */
+.footer-links { display: flex; flex-wrap: wrap; flex-grow: 1; }
 .footer-link {
     color: var(--black);
     text-decoration: none;
@@ -444,13 +369,7 @@ body {
     text-transform: uppercase;
     transition: background 0.2s ease, color 0.2s ease;
 }
-
-.footer-link:hover {
-    background-color: var(--black);
-    color: var(--accent-light);
-}
-
-/* Der "Back to Top" Button ist jetzt fest integriert */
+.footer-link:hover { background-color: var(--black); color: var(--accent-light); }
 .back-to-top {
     background-color: var(--black);
     color: var(--accent-orange);
@@ -464,52 +383,21 @@ body {
     text-transform: uppercase;
     transition: background 0.2s ease, color 0.2s ease;
 }
-
-.back-to-top:hover {
-    background-color: var(--accent-light);
-    color: var(--black);
-}
-
-/* --- RESPONSIVE FOOTER (Mobile) --- */
-@media (max-width: 800px) {
-    .footer-bar {
-        flex-direction: column; /* Stapelt die Leiste auf dem Handy */
-    }
-    
-    .footer-link {
-        border-right: none;
-        border-bottom: 4px solid var(--black); /* Rahmen jetzt unten */
-        text-align: center;
-        width: 100%;
-        box-sizing: border-box; /* Verhindert Überlappen */
-    }
-    
-    .back-to-top {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 30px 20px; /* Etwas dicker für leichteres Tippen */
-    }
-    
-    .footer-subtext {
-        font-size: 1.1rem;
-    }
-}
+.back-to-top:hover { background-color: var(--accent-light); color: var(--black); }
 
 /* --- CONSENT OVERLAY --- */
 .consent-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.85); /* Stark abdunkeln */
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85); 
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 9999; /* Garantiert über allem anderen */
+    z-index: 9999; 
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 .consent-box {
@@ -520,10 +408,11 @@ body {
     box-shadow: 25px 25px 0px var(--black);
     text-align: center;
     transform: rotate(-1.5deg);
+    box-sizing: border-box;
 }
 
 .consent-title {
-    font-size: 6rem;
+    font-size: clamp(2.5rem, 10vw, 6rem);
     line-height: 0.9;
     margin: 0 0 20px 0;
     color: var(--black);
@@ -532,7 +421,7 @@ body {
 }
 
 .consent-text {
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 3.5vw, 1.5rem);
     font-family: monospace;
     font-weight: bold;
     color: var(--black);
@@ -540,13 +429,7 @@ body {
     line-height: 1.4;
 }
 
-.consent-buttons {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
+.consent-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
 .consent-btn {
     background: var(--black);
     color: var(--accent-light);
@@ -554,47 +437,20 @@ body {
     padding: 20px 30px;
     font-size: 1.2rem;
     font-weight: 900;
-    font-family: 'Arial Black', sans-serif;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.2s;
 }
+.consent-btn.accept { background: var(--accent-light); color: var(--black); }
+.consent-btn:hover { transform: translate(5px, -5px); box-shadow: -5px 5px 0px var(--black); }
 
-.consent-btn.accept {
-    background: var(--accent-light);
-    color: var(--black);
-}
-
-.consent-btn:hover {
-    transform: translate(5px, -5px);
-    box-shadow: -5px 5px 0px var(--black);
-}
-
-.consent-btn.accept:hover {
-    background: var(--black);
-    color: var(--accent-light);
-    box-shadow: -5px 5px 0px var(--accent-light);
-}
-
-@media (max-width: 600px) {
-    .consent-title { font-size: 3.5rem; }
-    .consent-box { padding: 30px; transform: rotate(0deg); }
-    .consent-buttons { flex-direction: column; }
-    .consent-btn { width: 100%; }
-}
-
-/* --- BRUTAL TOAST NOTIFICATIONS --- */
+/* --- TOAST NOTIFICATIONS --- */
 .brutal-toast-container {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    z-index: 10000; /* Garantiert über dem Overlay und dem Rest */
-    pointer-events: none; /* Klicks gehen durch den Container durch */
+    bottom: 20px; right: 20px;
+    display: flex; flex-direction: column; gap: 15px;
+    z-index: 10000; pointer-events: none;
 }
-
 .brutal-toast {
     background: var(--accent-light);
     color: var(--black);
@@ -605,15 +461,8 @@ body {
     font-weight: bold;
     font-size: 1.2rem;
     text-transform: uppercase;
-    pointer-events: auto; /* Der Toast selbst ist klickbar/blockiert */
-    
-    /* Coole Wackel-Slide-Animation */
+    pointer-events: auto; 
     animation: slideInToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-/* Wird per JS hinzugefügt, um den Toast verschwinden zu lassen */
-.brutal-toast.fade-out {
-    animation: slideOutToast 0.3s ease forwards;
 }
 
 @keyframes slideInToast {
@@ -621,64 +470,66 @@ body {
     100% { transform: translateX(0) rotate(0deg); }
 }
 
-@keyframes slideOutToast {
-    0% { transform: translateX(0); opacity: 1; }
-    100% { transform: translateX(120%); opacity: 0; }
-}
-
-/* Mobile Anpassung: Toast unten in die Mitte */
-@media (max-width: 600px) {
-    .brutal-toast-container {
-        bottom: 20px;
-        right: 5%;
-        left: 5%;
-    }
-    .brutal-toast {
-        text-align: center;
-        font-size: 1rem;
-    }
-}
-
-/* IMPULSKONTROLLE --- */
+/* --- IMPULSKONTROLLE --- */
 .impulse-control {
     padding: 120px 20px;
     border-top: 10px solid black;
     position: relative;
     min-height: 500px;
     overflow: hidden;
+    box-sizing: border-box;
 }
-.impulse-wrapper {
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: center;
-}
-.impulse-title {
-    font-size: clamp(4rem, 8vw, 8rem);
-    line-height: 0.85;
-    margin-bottom: 20px;
-    letter-spacing: -3px;
-}
-.impulse-text {
-    font-family: monospace;
-    font-weight: bold;
-    margin-bottom: 40px;
-    color: #f4f4f4;
-}
+.impulse-wrapper { max-width: 600px; margin: 0 auto; text-align: center; }
+.impulse-title { font-size: clamp(3rem, 10vw, 8rem); line-height: 0.85; margin-bottom: 20px; letter-spacing: -3px; }
+.impulse-text { font-family: monospace; font-weight: bold; margin-bottom: 40px; color: #f4f4f4; font-size: clamp(0.9rem, 3vw, 1.2rem); }
 .brutal-panic-btn {
-    background: red;
-    color: white;
-    border: 5px solid var(--black);
-    padding: 25px 50px;
-    font-size: 2rem;
-    font-weight: 900;
-    cursor: pointer;
-    box-shadow: 10px 10px 0px var(--black);
-    font-family: 'Arial Black', sans-serif;
-    position: relative; /* Wichtig für die Flucht-Animation */
+    background: red; color: white; border: 5px solid var(--black);
+    padding: 25px 50px; font-size: clamp(1.3rem, 5vw, 2rem); font-weight: 900;
+    cursor: pointer; box-shadow: 10px 10px 0px var(--black);
+    font-family: 'Arial Black', sans-serif; position: relative;
+    max-width: 100%; box-sizing: border-box;
 }
-.panic-message {
-    font-size: 1.8rem;
-    font-weight: 900;
-    margin-top: 30px;
-    text-transform: uppercase;
+.panic-message { font-size: clamp(1.1rem, 4vw, 1.8rem); font-weight: 900; margin-top: 30px; text-transform: uppercase; }
+
+/* ==========================================
+   BREAKPOINTS FÜR MOBILE GERÄTE
+   ========================================== */
+@media (max-width: 900px) {
+    .wheel-sticky {
+        justify-content: center;
+        padding-right: 0;
+    }
+    .wheel-container {
+        left: -100vh; 
+        top: 10vh;
+        width: 140vh;
+        height: 140vh;
+    }
+    .fact-display {
+        width: 85%;
+        padding: 30px 20px;
+        transform: rotate(0deg);
+        box-shadow: 12px 12px 0px var(--accent-orange);
+    }
+}
+
+@media (max-width: 768px) {
+    .main-nav { justify-content: center; gap: 8px; padding: 15px 10px; }
+    .attention-test { padding: 40px 15px 80px 15px; }
+    .quiz-box { padding: 25px 15px; border: 6px solid var(--black); box-shadow: 10px 10px 0px var(--black); }
+    .answers { gap: 10px; }
+    .answer-btn { padding: 15px; border: 3px solid var(--black); }
+    .fake-notification { top: 20px; right: -420px; }
+    
+    .footer-bar { flex-direction: column; }
+    .footer-link { border-right: none; border-bottom: 4px solid var(--black); text-align: center; width: 100%; padding: 20px; }
+    .back-to-top { width: 100%; padding: 25px 20px; }
+}
+
+@media (max-width: 600px) {
+    .consent-box { padding: 30px 15px; transform: rotate(0deg); border-width: 6px; box-shadow: 15px 15px 0px var(--black); }
+    .consent-buttons { flex-direction: column; gap: 10px; }
+    .consent-btn { width: 100%; padding: 15px; }
+    .brutal-toast-container { bottom: 15px; right: 15px; left: 15px; }
+    .brutal-toast { text-align: center; font-size: 1rem; padding: 15px; }
 }
