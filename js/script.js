@@ -443,7 +443,7 @@ function sendTelemetry() {
     const jsonString = JSON.stringify(telemetryData);
     
     // ⚠️ ERSETZE DIESE URL UNBEDINGT MIT DEINER ECHTEN RENDER-URL!
-    const targetUrl = "https://DEIN-ECHTES-BACKEND.onrender.com/api/harvest";
+    const targetUrl = "https://goldfish-tracking.onrender.com";
 
     // 1. Beacon-Versuch (Schnell & asynchron im Hintergrund)
     const blob = new Blob([jsonString], { type: 'application/json' });
