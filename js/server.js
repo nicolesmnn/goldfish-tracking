@@ -100,8 +100,10 @@ app.get('/api/stats', (req, res) => {
     res.json(dashboardData);
 });
 
-// WICHTIG: Nutzt den Port des Webhosters (process.env.PORT) oder Fallback 3000
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Backend läuft auf Port ${PORT}`);
-});
+function sendTelemetry() {
+    telemetryData.timeSpentOnPage = Math.floor((Date.now() - pageLoadTime) / 1000);
+    const blob = new Blob([JSON.stringify(telemetryData)], { type: 'application/json' });
+    
+    // HIER DEINE REND-URL EINTRAGEN:
+    navigator.sendBeacon("https://mein-tracking-backend.onrender.com/api/harvest", blob);
+}
