@@ -46,11 +46,20 @@
   },
   {
     "time": "22:15:08",
-    "user": "usr_87i",
+    "user": "usr_jhf4",
     "action": "Read Content",
-    "scroll": "300vh",
+    "scroll": "70vh",
     "timeSpent": 102,
+    "wasPanic": 0,
+    "wasFail": 0
+  },
+    {
+    "time": "22:30:22",
+    "user": "usr_kj8",
+    "action": "Tab Switched",
+    "scroll": "200vh",
+    "timeSpent": 100,
     "wasPanic": 1,
     "wasFail": 0
-  }
+  },
 ]
