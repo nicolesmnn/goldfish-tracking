@@ -1,7 +1,7 @@
 [
   {
     "time": "10:12:10",
-    "user": "usr_UNKNOWN",
+    "user": "usr_ghd4",
     "action": "Rage Click Triggered",
     "scroll": "300vh",
     "timeSpent": 28,
@@ -11,9 +11,9 @@
     {
     "time": "14:00:10",
     "user": "usr_ds15",
-    "action": "Rage Click Triggered",
-    "scroll": "300vh",
-    "timeSpent": 28,
+    "action": "",
+    "scroll": "75vh",
+    "timeSpent": 20,
     "wasPanic": 1,
     "wasFail": 1
   },
@@ -21,8 +21,8 @@
     "time": "19:30:22",
     "user": "usr_rrt4",
     "action": "Tab Switched",
-    "scroll": "300vh",
-    "timeSpent": 28,
+    "scroll": "25vh",
+    "timeSpent": 5,
     "wasPanic": 1,
     "wasFail": 1
   },
@@ -31,7 +31,25 @@
     "user": "usr_90le",
     "action": "Read Content",
     "scroll": "300vh",
-    "timeSpent": 28,
+    "timeSpent": 34,
+    "wasPanic": 1,
+    "wasFail": 1
+  },  
+  {
+    "time": "17:30:23",
+    "user": "usr_iu5",
+    "action": "Rage Click Triggered",
+    "scroll": "25vh",
+    "timeSpent": 30,
+    "wasPanic": 1,
+    "wasFail": 1
+  },
+  {
+    "time": "22:15:08",
+    "user": "usr_87i",
+    "action": "Read Content",
+    "scroll": "300vh",
+    "timeSpent": 102,
     "wasPanic": 1,
     "wasFail": 1
   }
