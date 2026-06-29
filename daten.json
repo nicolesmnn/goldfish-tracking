@@ -8,4 +8,29 @@
     "wasPanic": 1,
     "wasFail": 1
   }
+    {
+    "time": "14:00:10",
+    "user": "usr_ds15",
+    "action": "Rage Click Triggered",
+    "scroll": "300vh",
+    "timeSpent": 28,
+    "wasPanic": 1,
+    "wasFail": 1
+  }  {
+    "time": "19:30:22",
+    "user": "usr_rrt4",
+    "action": "Tab Switched",
+    "scroll": "300vh",
+    "timeSpent": 28,
+    "wasPanic": 1,
+    "wasFail": 1
+  }  {
+    "time": "23:20:08",
+    "user": "usr_90le",
+    "action": "Read Content",
+    "scroll": "300vh",
+    "timeSpent": 28,
+    "wasPanic": 1,
+    "wasFail": 1
+  }
 ]
