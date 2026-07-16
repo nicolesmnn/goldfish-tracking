@@ -93,14 +93,19 @@ app.get('/api/stats', async (req, res) => {
                 rageClicks: logs.filter(l => l.wasPanic > 0).length
             },
             recentLogs: logs.slice(-10).reverse().map(l => {
-                // Formatiert das SQL-Datum in eine schöne Anzeige für deine Tabelle: "DD.MM.YYYY, HH:MM:SS"
-                const jsDate = new Date(l.time);
-                const formattedTime = jsDate.toLocaleString('de-DE', { timeZone: 'Europe/Vienna' });
+                const d = new Date(l.time);
+                
+                // Kleine Helferfunktion für führende Nullen
+                const pad = (n) => String(n).padStart(2, '0');
+                
+                // Formatiert das Datum sauber zu "DD.MM.YYYY, HH:MM:SS"
+                const formattedTime = `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}, ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                
                 return {
                     time: formattedTime,
                     user: l.user,
                     action: l.action,
-                    scroll: `${l.timeSpent} Sek.`
+                    scroll: `${l.timeSpent} Sek.` // Übergibt die Zeit anstelle der Scrolltiefe
                 };
             })
         };
