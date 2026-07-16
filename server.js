@@ -100,7 +100,7 @@ app.get('/api/stats', async (req, res) => {
                     time: formattedTime,
                     user: l.user,
                     action: l.action,
-                    scroll: l.scroll
+                    scroll: `${l.timeSpent} Sek.`
                 };
             })
         };
