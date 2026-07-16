@@ -12,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "mariadb": "^3.3.0",
+    "dotenv": "^16.4.5"
   }
 }
