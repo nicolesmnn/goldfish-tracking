@@ -1,6 +1,4 @@
 // --- DASHBOARD API LOGIK ---
-
-// HIER DEINE REND-URL EINTRAGEN:
 const API_BASE_URL = 'https://goldfish-tracking.onrender.com';
 
 async function fetchTrackingData() {

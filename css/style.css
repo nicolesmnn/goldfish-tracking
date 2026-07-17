@@ -1,12 +1,9 @@
-/* --- COMPLETED STYLE.CSS --- */
-
 :root {
-    --main-bg: #483d8b;    /* Dunkles Slate-Blue */
+    --main-bg: #483d8b;
     --black: #000000;
-    --accent-orange: #f39c12; /* Sattes Orange */
-    --accent-light: #f4f4f4;  /* Helles Grau/Off-White */
+    --accent-orange: #f39c12;
+    --accent-light: #f4f4f4;
 }
-
 
 .bubble {
   position: fixed;
@@ -15,27 +12,25 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   pointer-events: none;
-  z-index: -1; /* Hinter dem Text */
+  z-index: -1;
 }
 
-/* Der Container, den GSAP bewegt */
 .custom-cursor {
   position: fixed;
   top: 0;
   left: 0;
-  width: 60px;  /* Setze hier die Breite des Cursors fest */
-  height: 60px; /* Setze hier die Höhe des Cursors fest */
-  pointer-events: none; /* Klicks gehen durch das Bild durch */
-  z-index: 9999;        /* Immer ganz oben auf der Seite */
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 9999;
   transform: translate(-50%, -50%);
   will-change: transform;
 }
 
-/* Das Bild im Container */
 .custom-cursor img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Verhindert Verzerrungen */
+  object-fit: contain;
   display: block;
 }
 
@@ -47,19 +42,19 @@ body {
     background-color: var(--main-bg);
     font-family: 'Arial Black', sans-serif;
     margin: 0;
-    overflow-x: hidden; /* Absoluter Schutz vor horizontalem Scrollen */
-    user-select: none;  /* Verhindert Textmarkierung beim Draggen */
+    overflow-x: hidden;
+    user-select: none;
 }
 
-/* Navigation */
 .main-nav { 
     display: flex; 
     gap: 10px; 
     padding: 20px; 
     z-index: 10; 
     position: relative;
-    flex-wrap: wrap; /* Bricht auf schmalen Handys sauber um */
+    flex-wrap: wrap;
 }
+
 .nav-item {
     border: 3px solid var(--black);
     border-radius: 50px;
@@ -69,7 +64,6 @@ body {
     font-size: clamp(0.8rem, 3vw, 1rem);
 }
 
-/* --- KATZEN COLLAGE BEREICH --- */
 .collage-container {
     position: relative;
     width: 90vw;       
@@ -135,7 +129,6 @@ body {
     padding: 20px; color: rgba(255,255,255,0.05);
 }
 
-/* --- SCROLL RAD SEKTION (DESKTOP) --- */
 .wheel-section {
     height: 1000vh;
     padding-top: 20%;
@@ -240,7 +233,6 @@ body {
     transform: rotate(-2deg);
 }
 
-/* --- FOCUS CHECK SEKTION --- */
 .attention-test {
     padding: 60px 20px 120px 20px;
     border-top: 10px solid var(--black);
@@ -353,7 +345,6 @@ body {
 .notif-icon { font-size: 2rem; }
 .notif-text { font-family: monospace; color: var(--black); font-size: 1rem; text-align: left; }
 
-/* --- MASSIVE FOOTER --- */
 .brutal-footer {
     background-color: var(--accent-orange);
     border-top: 10px solid var(--black);
@@ -413,7 +404,6 @@ body {
 }
 .back-to-top:hover { background-color: var(--accent-light); color: var(--black); }
 
-/* --- CONSENT OVERLAY --- */
 .consent-overlay {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
@@ -472,7 +462,6 @@ body {
 .consent-btn.accept { background: var(--accent-light); color: var(--black); }
 .consent-btn:hover { transform: translate(5px, -5px); box-shadow: -5px 5px 0px var(--black); }
 
-/* --- TOAST NOTIFICATIONS --- */
 .brutal-toast-container {
     position: fixed;
     bottom: 20px; right: 20px;
@@ -498,7 +487,6 @@ body {
     100% { transform: translateX(0) rotate(0deg); }
 }
 
-/* --- IMPULSKONTROLLE --- */
 .impulse-control {
     padding: 120px 20px;
     border-top: 10px solid black;
@@ -519,11 +507,7 @@ body {
 }
 .panic-message { font-size: clamp(1.1rem, 4vw, 1.8rem); font-weight: 900; margin-top: 30px; text-transform: uppercase; }
 
-/* ==========================================
-   BREAKPOINTS & MOBILE OPTIMIERUNG
-   ========================================== */
 @media (max-width: 900px) {
-    /* ⚠️ RING UND STICKY-EFFEKT AUF MOBILE KOMPLETT DEAKTIVIEREN */
     .wheel-section {
         height: auto;
         padding: 50px 15px;
@@ -535,25 +519,24 @@ body {
         overflow: visible;
         display: flex;
         flex-direction: column;
-        gap: 30px; /* Abstand zwischen den einzelnen Fakten */
+        gap: 30px; 
         padding-right: 0;
         align-items: center;
     }
 
     .wheel-container {
-        display: none; /* Schaltet das Riesen-Rad komplett ab */
+        display: none; 
     }
 
-    /* Die Fakten-Box wird zur wiederholbaren, responsiven Inhaltskarte */
     .fact-display {
         position: relative;
         width: 100%;
         max-width: 500px;
         box-sizing: border-box;
         padding: 30px 20px;
-        transform: rotate(0deg) !important; /* Kein schräges Layout auf Mobilgeräten */
+        transform: rotate(0deg) !important; 
         box-shadow: 12px 12px 0px var(--accent-orange);
-        opacity: 1 !important; /* Ignoriert das GSAP-Ausblenden */
+        opacity: 1 !important; 
     }
 }
 
