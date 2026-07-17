@@ -7,6 +7,42 @@
     --accent-light: #f4f4f4;  /* Helles Grau/Off-White */
 }
 
+
+.bubble {
+  position: fixed;
+  bottom: -50px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1; /* Hinter dem Text */
+}
+
+/* Der Container, den GSAP bewegt */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 60px;  /* Setze hier die Breite des Cursors fest */
+  height: 60px; /* Setze hier die Höhe des Cursors fest */
+  pointer-events: none; /* Klicks gehen durch das Bild durch */
+  z-index: 9999;        /* Immer ganz oben auf der Seite */
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+/* Das Bild im Container */
+.custom-cursor img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Verhindert Verzerrungen */
+  display: block;
+}
+
+body, html {
+   cursor: none;
+}
+
 body {
     background-color: var(--main-bg);
     font-family: 'Arial Black', sans-serif;

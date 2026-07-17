@@ -1,5 +1,7 @@
-// GSAP ScrollTrigger Plugin registrieren
-gsap.registerPlugin(ScrollTrigger);
+// GSAP ScrollTrigger Plugin registrieren (falls vorhanden)
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+}
 
 // ==========================================
 // EINMALIGE USER-ID GENERIERUNG
@@ -8,7 +10,6 @@ if (!localStorage.getItem('trackingUserId')) {
     const randomId = 'usr_' + Math.random().toString(36).substring(2, 5).toUpperCase();
     localStorage.setItem('trackingUserId', randomId);
 }
-
 
 // 1. DATEN & ELEMENTE
 const facts = [
@@ -74,29 +75,33 @@ function setupMobileFacts() {
 document.addEventListener("DOMContentLoaded", setupMobileFacts);
 
 // 2. INTRO & HERO ANIMATIONEN
-if (!localStorage.getItem('userConsent')) {
-    gsap.from(".consent-box", {
-        duration: 0.6,
-        scale: 0,
-        rotation: -8,
-        ease: "back.out(1.5)",
-        delay: 0.3
-    });
+if (typeof gsap !== 'undefined') {
+    if (!localStorage.getItem('userConsent') && document.querySelector(".consent-box")) {
+        gsap.from(".consent-box", {
+            duration: 0.6,
+            scale: 0,
+            rotation: -8,
+            ease: "back.out(1.5)",
+            delay: 0.3
+        });
+    }
+
+    if (document.querySelector(".bg-text") && document.querySelector(".canvas")) {
+        gsap.to(".bg-text", {
+            scrollTrigger: {
+                trigger: ".canvas",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
+            },
+            xPercent: -15,
+            ease: "none"
+        });
+    }
 }
 
-gsap.to(".bg-text", {
-    scrollTrigger: {
-        trigger: ".canvas",
-        start: "top top",
-        end: "bottom top",
-        scrub: true
-    },
-    xPercent: -15,
-    ease: "none"
-});
-
 // 3. SCROLL-RAD LOGIK (NUR AUF DESKTOP AKTIVIEREN)
-if (window.innerWidth > 900 && wheel && section) {
+if (typeof gsap !== 'undefined' && window.innerWidth > 900 && wheel && section) {
     gsap.to(wheel, {
         scrollTrigger: {
             trigger: section,
@@ -133,7 +138,7 @@ if (window.innerWidth > 900 && wheel && section) {
 const attentionTest = document.getElementById('attentionTest');
 const fakeNotif = document.getElementById('fakeNotif');
 
-if (attentionTest && fakeNotif) {
+if (typeof gsap !== 'undefined' && attentionTest && fakeNotif) {
     const notifTimeline = gsap.timeline({
         scrollTrigger: {
             trigger: attentionTest,
@@ -191,6 +196,7 @@ if (attentionTest && fakeNotif) {
     });
 }
 
+// QUIZ-ANTWORT PRÜFEN
 function checkAnswer(isCorrect, btnElement) {
     const quizBox = document.getElementById('quizBox');
     const resultMsg = document.getElementById('resultMessage');
@@ -225,59 +231,61 @@ function checkAnswer(isCorrect, btnElement) {
 
 // 5. KATZEN-DRAG-AND-DROP LOGIK
 const patches = document.querySelectorAll('.patch');
-let activePatch = null;
-let offsetX = 0;
-let offsetY = 0;
+if (patches.length > 0) {
+    let activePatch = null;
+    let offsetX = 0;
+    let offsetY = 0;
 
-patches.forEach(patch => {
-    const dragStart = (e) => {
-        activePatch = patch;
-        patch.classList.add('dragging');
+    patches.forEach(patch => {
+        const dragStart = (e) => {
+            activePatch = patch;
+            patch.classList.add('dragging');
+            
+            const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+            
+            const rect = patch.getBoundingClientRect();
+            offsetX = clientX - rect.left;
+            offsetY = clientY - rect.top;
+            
+            patch.style.zIndex = 1000;
+        };
+
+        patch.addEventListener('mousedown', dragStart);
+        patch.addEventListener('touchstart', dragStart, { passive: true });
+    });
+
+    const drag = (e) => {
+        if (!activePatch) return;
+        if (e.cancelable) e.preventDefault(); 
         
         const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
         const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
         
-        const rect = patch.getBoundingClientRect();
-        offsetX = clientX - rect.left;
-        offsetY = clientY - rect.top;
+        const container = activePatch.parentElement;
+        const containerRect = container.getBoundingClientRect();
         
-        patch.style.zIndex = 1000;
+        let newLeft = clientX - containerRect.left - offsetX;
+        let newTop = clientY - containerRect.top - offsetY;
+        
+        activePatch.style.right = 'auto';
+        activePatch.style.bottom = 'auto';
+        activePatch.style.left = `${newLeft}px`;
+        activePatch.style.top = `${newTop}px`;
     };
 
-    patch.addEventListener('mousedown', dragStart);
-    patch.addEventListener('touchstart', dragStart, { passive: true });
-});
+    const dragEnd = () => {
+        if (!activePatch) return;
+        activePatch.classList.remove('dragging');
+        activePatch.style.zIndex = ""; 
+        activePatch = null;
+    };
 
-const drag = (e) => {
-    if (!activePatch) return;
-    if (e.cancelable) e.preventDefault(); 
-    
-    const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-    const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-    
-    const container = activePatch.parentElement;
-    const containerRect = container.getBoundingClientRect();
-    
-    let newLeft = clientX - containerRect.left - offsetX;
-    let newTop = clientY - containerRect.top - offsetY;
-    
-    activePatch.style.right = 'auto';
-    activePatch.style.bottom = 'auto';
-    activePatch.style.left = `${newLeft}px`;
-    activePatch.style.top = `${newTop}px`;
-};
-
-const dragEnd = () => {
-    if (!activePatch) return;
-    activePatch.classList.remove('dragging');
-    activePatch.style.zIndex = ""; 
-    activePatch = null;
-};
-
-document.addEventListener('mousemove', drag, { passive: false });
-document.addEventListener('mouseup', dragEnd);
-document.addEventListener('touchmove', drag, { passive: false });
-document.addEventListener('touchend', dragEnd);
+    document.addEventListener('mousemove', drag, { passive: false });
+    document.addEventListener('mouseup', dragEnd);
+    document.addEventListener('touchmove', drag, { passive: false });
+    document.addEventListener('touchend', dragEnd);
+}
 
 // 6. CONSENT OVERLAY LOGIK
 document.addEventListener("DOMContentLoaded", () => {
@@ -293,6 +301,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function showBrutalToast(message) {
+    if (typeof gsap === 'undefined') return;
+
     let container = document.getElementById('toastContainer');
     if (!container) {
         container = document.createElement('div');
@@ -323,20 +333,25 @@ function handleConsent(isAccepted) {
     localStorage.setItem('userConsent', isAccepted);
     telemetryData.userConsent = isAccepted ? 'true' : 'false';
     
-    gsap.to(overlay, {
-        yPercent: -100,
-        duration: 0.5,
-        ease: "power4.in",
-        onComplete: () => {
-            if (overlay) overlay.style.display = 'none';
-            if (isAccepted) {
-                startTracking();
-                showBrutalToast("Tracking aktiv. <br>Willkommen im System.");
-            } else {
-                showBrutalToast("Okay. Wir tracken dich nicht.<br>(Vielleicht.)");
+    if (typeof gsap !== 'undefined' && overlay) {
+        gsap.to(overlay, {
+            yPercent: -100,
+            duration: 0.5,
+            ease: "power4.in",
+            onComplete: () => {
+                overlay.style.display = 'none';
+                if (isAccepted) {
+                    startTracking();
+                    showBrutalToast("Tracking aktiv. <br>Willkommen im System.");
+                } else {
+                    showBrutalToast("Okay. Wir tracken dich nicht.<br>(Vielleicht.)");
+                }
             }
-        }
-    });
+        });
+    } else if (overlay) {
+        overlay.style.display = 'none';
+        if (isAccepted) startTracking();
+    }
 }
 
 function startTracking() {
@@ -355,7 +370,7 @@ document.addEventListener('mousemove', (e) => {
 const millBox = document.getElementById('millBox');
 const dopamineFeed = [
     { text: "Ein virales Katzenvideo 🐱", visual: "<span class='mill-emoji'>🐱 SCREENSHOT 🐱</span>" },
-    { text: "Jemand ist im Internet wütend 😡", visual: "<span class='mill-emoji'>🤬 ALERT 🤬</span>" },
+    { text: "Jemand is im Internet wütend 😡", visual: "<span class='mill-emoji'>🤬 ALERT 🤬</span>" },
     { text: "Ein tanzender Teenie auf TikTok 🕺", visual: "<span class='mill-emoji'>🔥 TRENDING 🔥</span>" },
     { text: "Dieser Klick wird dein Leben verändern ⚡", visual: "<span class='mill-emoji'>⚡ 100% DOPAMIN ⚡</span>" },
     { text: "Werbung für Socken, die du gestern gesucht hast 🧦", visual: "<span class='mill-emoji'>💸 BUY NOW 💸</span>" }
@@ -377,10 +392,12 @@ if (millBox) {
             
             millBox.appendChild(newItem);
 
-            gsap.fromTo(newItem, 
-                { scale: 0.6, opacity: 0, backgroundColor: "rgb(255, 111, 0)" }, 
-                { scale: 1, opacity: 1, backgroundColor: "#1a1a1a", duration: 0.25, ease: "back.out(1.4)" }
-            );
+            if (typeof gsap !== 'undefined') {
+                gsap.fromTo(newItem, 
+                    { scale: 0.6, opacity: 0, backgroundColor: "rgb(255, 111, 0)" }, 
+                    { scale: 1, opacity: 1, backgroundColor: "#1a1a1a", duration: 0.25, ease: "back.out(1.4)" }
+                );
+            }
 
             if (millBox.children.length === 15) {
                 const banner = document.createElement('div');
@@ -388,8 +405,12 @@ if (millBox) {
                 banner.innerText = "BIST DU JETZT GLÜCKLICH?";
                 document.body.appendChild(banner);
 
-                gsap.from(banner, { scale: 0, rotation: 720, ease: "back.out(1.5)", duration: 0.5 });
-                gsap.to(banner, { scale: 0, opacity: 0, delay: 2.5, duration: 0.3, onComplete: () => banner.remove() });
+                if (typeof gsap !== 'undefined') {
+                    gsap.from(banner, { scale: 0, rotation: 720, ease: "back.out(1.5)", duration: 0.5 });
+                    gsap.to(banner, { scale: 0, opacity: 0, delay: 2.5, duration: 0.3, onComplete: () => banner.remove() });
+                } else {
+                    setTimeout(() => banner.remove(), 2500);
+                }
             }
         }
     });
@@ -404,12 +425,14 @@ function makeButtonFlee() {
     if (panicMsg) panicMsg.innerText = "";
     if (panicBtn) {
         panicBtn.innerText = "FANG MICH DOCH!";
-        gsap.set(panicBtn, { backgroundColor: "orange" });
-        
-        let randomX = Math.floor((Math.random() - 0.5) * 450);
-        let randomY = Math.floor((Math.random() - 0.5) * 300);
-        
-        gsap.to(panicBtn, { x: randomX, y: randomY, duration: 0.1, ease: "power2.out" });
+        if (typeof gsap !== 'undefined') {
+            gsap.set(panicBtn, { backgroundColor: "orange" });
+            
+            let randomX = Math.floor((Math.random() - 0.5) * 450);
+            let randomY = Math.floor((Math.random() - 0.5) * 300);
+            
+            gsap.to(panicBtn, { x: randomX, y: randomY, duration: 0.1, ease: "power2.out" });
+        }
     }
 }
 
@@ -421,18 +444,25 @@ if (panicBtn) {
 
         if (clickCount === 1) {
             if (panicMsg) panicMsg.innerText = "Ernsthaft? Keine Selbstbeherrschung.";
-            gsap.fromTo(panicMsg, { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "bounce.out" });
+            if (typeof gsap !== 'undefined') {
+                gsap.fromTo(panicMsg, { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "bounce.out" });
+            }
         } 
         else if (clickCount === 2) {
             if (panicMsg) panicMsg.innerText = "Hör auf zu klicken! Geh weiter!";
-            gsap.to(panicBtn, { 
-                x: "+=12", yoyo: true, repeat: 7, duration: 0.04, 
-                onComplete: () => {
-                    gsap.set(panicBtn, { x: 0 });
-                    makeButtonFlee();
-                    startHoverRunaway();
-                } 
-            });
+            if (typeof gsap !== 'undefined') {
+                gsap.to(panicBtn, { 
+                    x: "+=12", yoyo: true, repeat: 7, duration: 0.04, 
+                    onComplete: () => {
+                        gsap.set(panicBtn, { x: 0 });
+                        makeButtonFlee();
+                        startHoverRunaway();
+                    } 
+                });
+            } else {
+                makeButtonFlee();
+                startHoverRunaway();
+            }
         }
     };
 
@@ -471,10 +501,12 @@ document.querySelectorAll('main, section, footer').forEach(sec => trackingObserv
 // OPTIMIERTES DATEN-SENDEN (JETZT MIT KORREKTER ROUTE)
 // ==========================================
 function sendTelemetry() {
+    // Falls kein Consent erteilt wurde (oder abgelehnt wurde), senden wir absolut nichts!
+    if (localStorage.getItem('userConsent') !== 'true') return;
+
     telemetryData.timeSpentOnPage = Math.floor((Date.now() - pageLoadTime) / 1000);
     const jsonString = JSON.stringify(telemetryData);
     
-    // 👑 HIER IST DIE KORREKTE ROUTE:
     const targetUrl = "https://goldfish-tracking.onrender.com/api/harvest";
 
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -499,3 +531,32 @@ document.addEventListener("DOMContentLoaded", () => {
         auswertungBtn.addEventListener("click", () => { sendTelemetry(); });
     }
 });
+
+// ==========================================
+// ROBUS-CUSTOM-CURSOR (FLIEGE)
+// ==========================================
+const cursor = document.querySelector('.custom-cursor');
+
+if (cursor && typeof gsap !== 'undefined') {
+    const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const mouse = { x: pos.x, y: pos.y };
+    const speed = 0.15;
+
+    const xTo = gsap.quickTo(cursor, "x", {duration: 0.3, ease: "power3"}),
+          yTo = gsap.quickTo(cursor, "y", {duration: 0.3, ease: "power3"});
+
+    window.addEventListener("mousemove", e => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      
+      // Drehe die Fliege in Gehrichtung!
+      const angle = Math.atan2(e.clientY - pos.y, e.clientX - pos.x) * 180 / Math.PI;
+      gsap.to(cursor, { rotation: angle, duration: 0.2 });
+      
+      pos.x += (mouse.x - pos.x) * speed;
+      pos.y += (mouse.y - pos.y) * speed;
+      
+      xTo(pos.x);
+      yTo(pos.y);
+    });
+}
